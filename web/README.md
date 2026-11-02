@@ -23,6 +23,8 @@ junto con los cambios de `web/`.
   (`taller`, `cta`, `footer`, `mock`) y los diálogos
   `beta` y `demo`, cuyos IDs usa `public/lana.js`. Se montan con `components/Legacy.tsx`.
 - `app/legacy.css` — CSS no-Tailwind de la landing anterior (variables, mockup, diálogos).
+- `og/og.html` + `scripts/og.mjs` — plantilla y render de la OG image (`npm run og`, usa el
+  Chromium de Playwright; con `PLAYWRIGHT_PKG` se apunta a una instalación global).
 - `public/` — assets estáticos, `CNAME`, `.nojekyll`, `lana.js`, `supabase-config.js`,
   `privacidad.html`, `eliminacion-datos.html`.
 
@@ -33,4 +35,5 @@ junto con los cambios de `web/`.
 2. **Hecha** — `Producto` en bento con ilustraciones propias, `Flujo` con pasos
    conectados y rejilla de capacidades, `Precios` con el plan Beta resaltado (IDs de
    `lana.js` intactos). Entradas al hacer scroll con `components/Reveal.tsx`.
-3. Fotografía de producto y video (Higgsfield), testimonios de betas, nueva OG image.
+3. **En curso** — OG image nueva hecha. Pendiente: fotografía/video de producto
+   (Higgsfield requiere plan Basic; mejor fotos reales del taller) y testimonios de betas.
