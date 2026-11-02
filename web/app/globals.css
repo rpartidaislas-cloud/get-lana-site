@@ -64,3 +64,31 @@ html {
     transform: none !important;
   }
 }
+
+/* Entrada al hacer scroll (components/Reveal.tsx añade .in-view al contenedor). */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.in-view .reveal {
+  opacity: 1;
+  transform: none;
+}
+.reveal-stagger > .reveal:nth-child(2) { transition-delay: 0.08s; }
+.reveal-stagger > .reveal:nth-child(3) { transition-delay: 0.16s; }
+.reveal-stagger > .reveal:nth-child(4) { transition-delay: 0.24s; }
+.reveal-stagger > .reveal:nth-child(5) { transition-delay: 0.32s; }
+.reveal-stagger > .reveal:nth-child(6) { transition-delay: 0.4s; }
+.reveal-stagger > .reveal:nth-child(7) { transition-delay: 0.48s; }
+.reveal-stagger > div > .reveal:nth-child(2) { transition-delay: 0.3s; }
+.flow-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.2s ease-out 0.2s;
+}
+.in-view .flow-line { stroke-dashoffset: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .flow-line { stroke-dashoffset: 0; transition: none; }
+}

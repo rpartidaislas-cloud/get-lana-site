@@ -16,10 +16,11 @@ junto con los cambios de `web/`.
 ## Estructura
 
 - `app/` — layout (metadata, fuente Inter, `lana.js` y `supabase-config.js`) y página.
-- `components/` — secciones nuevas: `Header`, `Hero` (adaptado de *Hero with Mockup*
-  de 21st.dev), `PhoneChat` (conversación de WhatsApp animada), `Marquee`, `Faq`.
+- `components/` — secciones: `Header`, `Hero` (adaptado de *Hero with Mockup* de
+  21st.dev), `PhoneChat` (conversación de WhatsApp animada), `Marquee`, `Producto`
+  (bento), `Flujo`, `Precios`, `Faq`; `Reveal` (animación al hacer scroll) e `icons`.
 - `legacy/` — fragmentos HTML de la landing anterior que todavía no se rediseñan
-  (`producto`, `flujo`, `taller`, `precios`, `cta`, `footer`, `mock`) y los diálogos
+  (`taller`, `cta`, `footer`, `mock`) y los diálogos
   `beta` y `demo`, cuyos IDs usa `public/lana.js`. Se montan con `components/Legacy.tsx`.
 - `app/legacy.css` — CSS no-Tailwind de la landing anterior (variables, mockup, diálogos).
 - `public/` — assets estáticos, `CNAME`, `.nojekyll`, `lana.js`, `supabase-config.js`,
@@ -29,5 +30,7 @@ junto con los cambios de `web/`.
 
 1. **Hecha** — proyecto Next 15 + Tailwind 4, hero nuevo, teléfono con chat animado,
    marquesina de técnicas e integraciones, FAQ en React; resto migrado tal cual.
-2. Bento de producto, flujo animado, precios con toggle, acordeón mejorado.
+2. **Hecha** — `Producto` en bento con ilustraciones propias, `Flujo` con pasos
+   conectados y rejilla de capacidades, `Precios` con el plan Beta resaltado (IDs de
+   `lana.js` intactos). Entradas al hacer scroll con `components/Reveal.tsx`.
 3. Fotografía de producto y video (Higgsfield), testimonios de betas, nueva OG image.

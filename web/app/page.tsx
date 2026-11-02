@@ -3,6 +3,9 @@ import Hero from "@/components/Hero";
 import Marquee from "@/components/Marquee";
 import Faq from "@/components/Faq";
 import Legacy from "@/components/Legacy";
+import Producto from "@/components/Producto";
+import Flujo from "@/components/Flujo";
+import Precios from "@/components/Precios";
 
 export default function Page() {
   return (
@@ -11,11 +14,11 @@ export default function Page() {
       <main className="grow">
         <Hero />
         <Marquee />
-        {/* Fase 2: estas secciones se rediseñan (bento, flujo animado, pricing). */}
-        <Legacy name="producto" />
-        <Legacy name="flujo" />
+        <Producto />
+        <Flujo />
+        {/* Fase 3: testimonio → carrusel con betas reales. */}
         <Legacy name="taller" />
-        <Legacy name="precios" />
+        <Precios />
         <Faq />
         <Legacy name="cta" />
       </main>
