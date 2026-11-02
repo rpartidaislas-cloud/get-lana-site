@@ -1,0 +1,94 @@
+@import "tailwindcss";
+@source "../legacy";
+
+@theme {
+  --font-inter: var(--font-inter-next), Inter, ui-sans-serif, system-ui, sans-serif;
+  --color-lana-50: #f3f0fc;
+  --color-lana-100: #e8e2fa;
+  --color-lana-300: #b9adf5;
+  --color-lana-400: #8e74e8;
+  --color-lana-500: #6d4fe0;
+  --color-lana-600: #5b3bd5;
+  --color-lana-700: #4a2fb5;
+  --color-brand: #5b3bd5;
+  --color-brand-deep: #3f2aa3;
+  --color-brand-soft: #efebfc;
+  --color-brand-glow: #b9adf5;
+  --animate-appear: appear 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  --animate-appear-zoom: appear-zoom 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+
+  @keyframes appear {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes appear-zoom {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+}
+
+@layer components {
+  .btn,
+  .btn-sm {
+    @apply inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium shadow-sm transition-all;
+  }
+  .btn {
+    @apply px-4 py-[11px] shadow-lg;
+  }
+  .btn-sm {
+    @apply px-3 py-[5px];
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-appear,
+  .animate-appear-zoom,
+  .animate-marquee,
+  .animate-float {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Entrada al hacer scroll (components/Reveal.tsx añade .in-view al contenedor). */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.in-view .reveal {
+  opacity: 1;
+  transform: none;
+}
+.reveal-stagger > .reveal:nth-child(2) { transition-delay: 0.08s; }
+.reveal-stagger > .reveal:nth-child(3) { transition-delay: 0.16s; }
+.reveal-stagger > .reveal:nth-child(4) { transition-delay: 0.24s; }
+.reveal-stagger > .reveal:nth-child(5) { transition-delay: 0.32s; }
+.reveal-stagger > .reveal:nth-child(6) { transition-delay: 0.4s; }
+.reveal-stagger > .reveal:nth-child(7) { transition-delay: 0.48s; }
+.reveal-stagger > div > .reveal:nth-child(2) { transition-delay: 0.3s; }
+.flow-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.2s ease-out 0.2s;
+}
+.in-view .flow-line { stroke-dashoffset: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .flow-line { stroke-dashoffset: 0; transition: none; }
+}

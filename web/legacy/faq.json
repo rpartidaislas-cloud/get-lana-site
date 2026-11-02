@@ -1,0 +1,26 @@
+[
+ {
+  "q": "¿Necesito tener WhatsApp Business API para usar LANA?",
+  "a": "<p class=\"px-4 pb-3\">No. LANA está verificada como proveedor tecnológico de Meta, así que conectamos tu número durante la puesta en marcha mediante el registro oficial. Solo necesitas un número que no esté activo en la app normal de WhatsApp y tu cuenta de Meta Business.</p>"
+ },
+ {
+  "q": "¿La IA responde sola o la reviso yo?",
+  "a": "<p class=\"px-4 pb-3\">Tú decides. Puede responder automáticamente con tu catálogo y reglas, o puedes revisar cada mensaje antes de enviarlo. En cualquier momento tomas la conversación y la IA se hace a un lado.</p>"
+ },
+ {
+  "q": "¿Cuánto cobra Meta por los mensajes?",
+  "a": "<p class=\"px-4 pb-3\">Meta cobra por conversación de WhatsApp Business según el tipo de mensaje y el país; Messenger e Instagram no tienen costo. Esos cargos se pagan directamente a Meta y no están incluidos en el precio de LANA.</p>"
+ },
+ {
+  "q": "¿Cuánto tarda la puesta en marcha?",
+  "a": "<p class=\"px-4 pb-3\">Normalmente entre uno y tres días hábiles: conectamos tus canales, cargamos tu catálogo y reglas de arte, y configuramos el estilo de atención de la IA contigo en una sesión guiada.</p>"
+ },
+ {
+  "q": "¿Qué pasa cuando termine la Beta?",
+  "a": "<p class=\"px-4 pb-3\">Tu suscripción continúa sin interrupciones. La condición de Fundador no es un precio de por vida, pero cualquier cambio de tarifa se avisa con anticipación, y conservas el 30% de descuento en Operación y Multisucursal durante sus primeros 12 meses.</p>"
+ },
+ {
+  "q": "¿Puedo cancelar?",
+  "a": "<p class=\"px-4 pb-3\">Sí, en cualquier momento y sin penalización. Tu acceso se mantiene hasta el final del periodo pagado y puedes solicitar la eliminación de tus datos desde la página correspondiente.</p>"
+ }
+]

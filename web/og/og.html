@@ -1,0 +1,48 @@
+<!doctype html>
+<!-- Plantilla de la OG image (1200×630). Se renderiza con `node scripts/og.mjs` → public/assets/og-lana.png -->
+<html lang="es"><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{width:1200px;height:630px;overflow:hidden;font-family:Inter,system-ui,sans-serif;background:#f8f8fb;color:#1b1735;position:relative}
+  .glow{position:absolute;left:50%;top:-220px;width:1100px;height:560px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(91,59,213,.30),rgba(91,59,213,0));filter:blur(30px)}
+  .grid{position:absolute;inset:0;opacity:.35;background-image:linear-gradient(to right,rgba(27,23,53,.06) 1px,transparent 1px),linear-gradient(to bottom,rgba(27,23,53,.06) 1px,transparent 1px);background-size:48px 48px;-webkit-mask-image:radial-gradient(ellipse at top,#000 30%,transparent 72%)}
+  .wrap{position:relative;padding:64px 72px;height:100%;display:flex;flex-direction:column}
+  .top{display:flex;align-items:center;gap:18px}
+  .top img{height:26px}
+  .meta{display:flex;align-items:center;gap:8px;border-left:1px solid #d1cbe3;padding-left:18px;font-size:16px;color:#514b6e}
+  .meta img{height:14px}
+  .chips{margin-top:44px;display:flex;gap:10px}
+  .chip{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid #e6e3f0;border-radius:999px;padding:7px 14px;font-size:16px;font-weight:600;color:#352e5c}
+  .chip i{width:9px;height:9px;border-radius:50%}
+  h1{margin-top:22px;font-size:66px;line-height:1.04;letter-spacing:-.035em;font-weight:800;max-width:800px;background:linear-gradient(to bottom,#1b1735,#1b1735 60%,#514b6e);-webkit-background-clip:text;color:transparent}
+  p{margin-top:22px;font-size:24px;line-height:1.35;color:#514b6e;max-width:720px}
+  .foot{margin-top:auto;display:flex;flex-direction:column;align-items:flex-start;gap:16px;font-size:18px;color:#7b7596}
+  .cta{background:linear-gradient(to bottom,#5b3bd5,#3f2aa3);color:#fff;border-radius:12px;padding:12px 22px;font-weight:600;font-size:18px}
+  .phone{position:absolute;right:72px;top:118px;width:250px;height:560px;border:6px solid #1b1735;border-radius:40px;background:#efe7dd;overflow:hidden;box-shadow:0 40px 80px -30px rgba(27,23,53,.5)}
+  .ph{background:#075e54;color:#fff;padding:34px 14px 10px;font-size:13px;font-weight:600}
+  .ph span{display:block;font-weight:400;font-size:11px;opacity:.75}
+  .m{margin:10px 10px 0;max-width:86%;border-radius:12px;padding:8px 10px;font-size:12px;line-height:1.35;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+  .m.out{margin-left:auto;background:#dcf8c6}
+  .q{margin:10px 10px 0;background:#fff;border-radius:12px;padding:10px;font-size:11px;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+  .q b{display:block;font-size:12px;margin-bottom:6px}
+  .q div{display:flex;justify-content:space-between;color:#514b6e;margin-top:3px}
+  .q .t{border-top:1px solid #eee;margin-top:6px;padding-top:6px;font-weight:700;color:#1b1735}
+  .q .btn{display:block;margin-top:8px;background:#5b3bd5;color:#fff;border-radius:8px;text-align:center;padding:6px;font-weight:600}
+</style></head><body>
+<div class="glow"></div><div class="grid"></div>
+<div class="wrap">
+  <div class="top"><img src="../public/icons/LANACLARO.png" alt="LANA"><span class="meta"><img src="../public/assets/meta-logo-official.webp" alt="Meta">Proveedor tecnológico verificado</span></div>
+  <div class="chips"><span class="chip"><i style="background:#25D366"></i>WhatsApp Business</span><span class="chip"><i style="background:#0866FF"></i>Messenger</span><span class="chip"><i style="background:#C13584"></i>Instagram</span></div>
+  <h1>Responde, cotiza y produce desde una sola conversación</h1>
+  <p>Tus chats en una bandeja, la IA cotiza con tu catálogo y cada pedido pagado se vuelve orden de trabajo.</p>
+  <div class="foot"><span>Para talleres de bordado, impresión y promocionales</span><span class="cta">get-lana.com</span></div>
+</div>
+<div class="phone">
+  <div class="ph">Grupo Vértice<span>en línea · LANA activa</span></div>
+  <div class="m">Necesito 40 polos azul marino con nuestro logo bordado.</div>
+  <div class="m out">¡Claro! ¿El bordado va de 8 × 8 cm?</div>
+  <div class="m">Sí, ¿cuánto saldría?</div>
+  <div class="q"><b>Cotización LANA-1842</b><div><span>40 polos ejecutivos</span><span>$12,760</span></div><div><span>Bordado 8 × 8 cm</span><span>$2,400</span></div><div class="t"><span>Total</span><span>$15,160</span></div><span class="btn">Ver y aprobar</span></div>
+</div>
+</body></html>

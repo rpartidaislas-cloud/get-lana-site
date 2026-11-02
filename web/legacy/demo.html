@@ -1,0 +1,52 @@
+<div class="demo-overlay" id="demoProducto" hidden>
+    <div class="demo-dialog" id="demo-producto" role="dialog" aria-modal="true" aria-labelledby="demoTitle" aria-describedby="demoDescription">
+      <section class="demo-context">
+        <span class="demo-context-label">Demostración interactiva</span>
+        <h2 id="demoTitle">De un mensaje a una orden clara.</h2>
+        <p id="demoDescription">Escribe como lo haría un cliente. LANA organizará los datos del pedido, preparará la cotización y generará una orden ficticia para revisión.</p>
+        <ul class="demo-context-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>Contexto configurado como en Capacitar IA</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>Respuestas de Claude con catálogo ficticio validado</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>Sin compra, registro ni almacenamiento</li>
+        </ul>
+      </section>
+      <section class="demo-phone" aria-label="Simulación de conversación en un teléfono">
+        <div class="demo-screen">
+          <header class="demo-topbar">
+            <span class="demo-avatar" aria-hidden="true">L</span>
+            <span class="demo-channel"><strong>LANA · Canal WhatsApp</strong><span>Demostración, no es una conversación real</span></span>
+            <button class="demo-close" id="demoClose" type="button" aria-label="Cerrar demostración">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+            </button>
+          </header>
+          <div class="demo-progress" aria-live="polite">
+            <div class="demo-progress-copy"><span>Datos del pedido</span><span id="demoProgressText">0% completo</span></div>
+            <div class="demo-progress-track"><div class="demo-progress-value" id="demoProgressValue"></div></div>
+          </div>
+          <div class="demo-messages" id="demoMessages" aria-live="polite" aria-label="Mensajes de la demostración"></div>
+          <div>
+            <section class="demo-consent" id="demoConsent">
+              <strong>Antes de comenzar</strong>
+              <p>Los mensajes de esta demostración se envían a Anthropic para generar la respuesta. LANA no guarda esta conversación. Las imágenes permanecen en tu dispositivo y no se envían ni se guardan. No escribas datos personales.</p>
+              <label><input type="checkbox" id="demoConsentCheck">Entiendo que es una simulación y acepto el envío de mis mensajes a Anthropic.</label>
+              <button class="lbtn button-primary" id="demoConsentButton" type="button" disabled>Entiendo y comenzar</button>
+            </section>
+            <div class="demo-quick-replies" id="demoQuickReplies" aria-label="Respuestas sugeridas"></div>
+          </div>
+          <form class="demo-composer" id="demoForm">
+            <div class="demo-attachment-preview" id="demoAttachmentPreview" aria-live="polite" hidden>
+              <img id="demoAttachmentImage" alt="Vista previa de la imagen adjunta">
+              <span class="demo-attachment-copy"><strong id="demoAttachmentName"></strong><span>Vista previa local · no se envía ni se guarda</span></span>
+              <button class="demo-attachment-remove" id="demoAttachmentRemove" type="button" aria-label="Quitar imagen adjunta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+            </div>
+            <input id="demoAttachmentInput" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+            <button class="demo-attach" id="demoAttach" type="button" aria-label="Adjuntar una imagen" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.4 11.6-8.9 8.9a6 6 0 0 1-8.5-8.5l9.6-9.6a4 4 0 0 1 5.7 5.7l-9.6 9.6a2 2 0 0 1-2.8-2.8l8.9-8.9"/></svg></button>
+            <textarea class="demo-input" id="demoInput" rows="1" maxlength="600" placeholder="Describe el pedido…" aria-label="Mensaje para LANA" disabled></textarea>
+            <button class="demo-send" id="demoSend" type="submit" aria-label="Enviar mensaje" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+            </button>
+          </form>
+        </div>
+      </section>
+    </div>
+  </div>
