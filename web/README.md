@@ -1,0 +1,33 @@
+# Landing de LANA — fuente (`web/`)
+
+La raíz del repo es el **resultado exportado** que GitHub Pages sirve en
+https://get-lana.com. No se edita a mano: se genera desde aquí.
+
+```bash
+cd web
+npm install
+npm run dev          # http://localhost:3000
+npm run deploy       # next build + copia web/out → raíz del repo
+```
+
+Después de `npm run deploy`, commitea la raíz (`index.html`, `_next/`, etc.)
+junto con los cambios de `web/`.
+
+## Estructura
+
+- `app/` — layout (metadata, fuente Inter, `lana.js` y `supabase-config.js`) y página.
+- `components/` — secciones nuevas: `Header`, `Hero` (adaptado de *Hero with Mockup*
+  de 21st.dev), `PhoneChat` (conversación de WhatsApp animada), `Marquee`, `Faq`.
+- `legacy/` — fragmentos HTML de la landing anterior que todavía no se rediseñan
+  (`producto`, `flujo`, `taller`, `precios`, `cta`, `footer`, `mock`) y los diálogos
+  `beta` y `demo`, cuyos IDs usa `public/lana.js`. Se montan con `components/Legacy.tsx`.
+- `app/legacy.css` — CSS no-Tailwind de la landing anterior (variables, mockup, diálogos).
+- `public/` — assets estáticos, `CNAME`, `.nojekyll`, `lana.js`, `supabase-config.js`,
+  `privacidad.html`, `eliminacion-datos.html`.
+
+## Fases
+
+1. **Hecha** — proyecto Next 15 + Tailwind 4, hero nuevo, teléfono con chat animado,
+   marquesina de técnicas e integraciones, FAQ en React; resto migrado tal cual.
+2. Bento de producto, flujo animado, precios con toggle, acordeón mejorado.
+3. Fotografía de producto y video (Higgsfield), testimonios de betas, nueva OG image.

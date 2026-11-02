@@ -1,0 +1,26 @@
+{
+  "name": "get-lana-site",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Landing de LANA (get-lana.com). Fuente en web/, build exportado a la raíz del repo para GitHub Pages.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "publish:root": "node scripts/publish.mjs",
+    "deploy": "npm run build && npm run publish:root"
+  },
+  "dependencies": {
+    "next": "^15.5.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "postcss": "^8.5.0",
+    "tailwindcss": "^4.1.0",
+    "typescript": "^5.9.0"
+  }
+}
