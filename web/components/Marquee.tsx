@@ -19,13 +19,14 @@ const tecnicas = [
   "Mochilas y bolsas",
 ];
 
-const integraciones: { label: string; color: string }[] = [
-  { label: "WhatsApp Business Platform", color: "#25D366" },
-  { label: "Messenger Platform", color: "#0866FF" },
-  { label: "Instagram Messaging API", color: "#C13584" },
-  { label: "Meta · Proveedor verificado", color: "#0866FF" },
-  { label: "Stripe · Pagos", color: "#635BFF" },
-  { label: "CFDI 4.0 · Facturación", color: "#1d7a45" },
+/** Logos de integraciones (public/assets/integraciones, fondo transparente, 96 px de alto). */
+const integraciones: { name: string; src: string; w: number }[] = [
+  { name: "Meta", src: "/assets/meta-logo-official.webp", w: 110 },
+  { name: "Stripe", src: "/assets/integraciones/stripe.png", w: 72 },
+  { name: "Mercado Pago", src: "/assets/integraciones/mercadopago.png", w: 113 },
+  { name: "Openpay by BBVA", src: "/assets/integraciones/openpay.png", w: 120 },
+  { name: "Shopify", src: "/assets/integraciones/shopify.png", w: 104 },
+  { name: "Notion", src: "/assets/integraciones/notion.png", w: 87 },
 ];
 
 export default function Marquee() {
@@ -44,16 +45,23 @@ export default function Marquee() {
           </span>
         ))}
       </Track>
-      <div className="mt-4">
-        <Track reverse>
-          {integraciones.map((i) => (
-            <span key={i.label} className="inline-flex items-center gap-2 whitespace-nowrap px-4 py-1 text-sm font-semibold text-gray-500">
-              <span className="h-2 w-2 rounded-full" style={{ background: i.color }} aria-hidden="true" />
-              {i.label}
-            </span>
-          ))}
-        </Track>
+      <div className="mx-auto mt-8 max-w-6xl px-4 sm:px-6">
+        <p className="mb-4 text-center text-xs font-semibold uppercase tracking-[.18em] text-gray-500">Se integra con</p>
       </div>
+      <Track reverse>
+        {[...integraciones, ...integraciones].map((i, n) => (
+          <span key={i.name + n} className="flex h-12 items-center px-6" title={i.name}>
+            <img
+              src={i.src}
+              alt={i.name}
+              width={i.w}
+              height={30}
+              loading="lazy"
+              className="h-[30px] w-auto max-w-none"
+            />
+          </span>
+        ))}
+      </Track>
     </section>
   );
 }
