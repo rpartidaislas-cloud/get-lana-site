@@ -5,6 +5,7 @@ import { WA_CREAR_CUENTA } from "@/lib/whatsapp";
 
 const links = [
   { href: "#producto", label: "Producto" },
+  { href: "#disenos", label: "Diseños" },
   { href: "#flujo", label: "Cómo funciona" },
   { href: "#precios", label: "Precios" },
   { href: "#faq", label: "Preguntas" },
@@ -26,14 +27,14 @@ export default function Header() {
             <a className="inline-flex items-center" aria-label="LANA, inicio" href="/">
               <img src="/icons/LANACLARO.png" alt="LANA" width={100} height={17} />
             </a>
-            <span className="hidden items-center gap-1.5 border-l border-gray-200 pl-3 text-xs text-gray-500 lg:inline-flex">
+            <span className="hidden items-center gap-1.5 whitespace-nowrap border-l border-gray-200 pl-3 text-xs text-gray-500 xl:inline-flex">
               <img src="/assets/meta-logo-official.webp" alt="Meta" width={44} height={10} />
               Proveedor tecnológico verificado
             </span>
           </div>
           <nav className="hidden flex-1 items-center justify-center gap-5 text-sm font-medium text-gray-600 md:flex">
             {links.map((l) => (
-              <a key={l.href} className="hover:text-gray-900" href={l.href}>
+              <a key={l.href} className="whitespace-nowrap hover:text-gray-900" href={l.href}>
                 {l.label}
               </a>
             ))}
