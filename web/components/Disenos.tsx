@@ -45,6 +45,14 @@ const prendas: Prenda[] = [
   },
 ];
 
+/** Logos de ejemplo (marcas ficticias). El visitante elige uno en lugar de subir archivos. */
+const logosDemo = [
+  { id: "halcones-fc", name: "Halcones F.C.", file: "halcones-fc.jpg" },
+  { id: "cafe-montana", name: "Café La Montaña", file: "cafe-montana.jpg" },
+  { id: "constructora-norte", name: "Constructora Norte", file: "constructora-norte.jpg" },
+  { id: "clinica-alba", name: "Clínica Dental Alba", file: "clinica-alba.jpg" },
+];
+
 const colores: { hex: string; name: string }[] = [
   { hex: "#ffffff", name: "Blanco" },
   { hex: "#9aa3b2", name: "Gris" },
@@ -59,15 +67,15 @@ export default function Disenos() {
   const prenda = prendas.find((p) => p.id === prendaId)!;
   const mask = `url(${prenda.src}) center / contain no-repeat`;
 
-  // Logo del visitante (todo en el navegador; nada se sube a ningún servidor).
-  const [logo, setLogo] = useState<{ original: string; ar: number; name: string } | null>(null);
+  // Logo elegido de la galería de ejemplo (simula una subida; no se aceptan archivos externos).
+  const [logo, setLogo] = useState<{ id: string; original: string; ar: number; name: string } | null>(null);
+  const [subiendo, setSubiendo] = useState<string | null>(null);
   const [sinFondo, setSinFondo] = useState(false);
   const [tolerancia, setTolerancia] = useState(40);
   const [procesado, setProcesado] = useState<string | null>(null);
   const [pos, setPos] = useState(prenda.logo);
   const [error, setError] = useState("");
   const lienzo = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   // Al cambiar de prenda, el logo vuelve al pecho izquierdo de esa prenda.
   useEffect(() => {
@@ -88,31 +96,27 @@ export default function Disenos() {
     };
   }, [logo, sinFondo, tolerancia]);
 
-  const cargar = useCallback((file: File | undefined) => {
+  // "Subir" un logo de ejemplo: barra de carga breve y luego aparece en la prenda.
+  const elegir = useCallback((demo: (typeof logosDemo)[number]) => {
     setError("");
-    if (!file) return;
-    if (!/^image\/(png|jpe?g|webp|svg\+xml)$/.test(file.type)) {
-      setError("Sube una imagen PNG, JPG, WEBP o SVG.");
-      return;
-    }
-    if (file.size > 10 * 1024 * 1024) {
-      setError("La imagen pesa más de 10 MB.");
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = () => {
-      const url = String(reader.result);
-      const img = new Image();
-      img.onload = () => {
-        const ar = img.naturalWidth && img.naturalHeight ? img.naturalWidth / img.naturalHeight : 1;
-        setLogo({ original: url, ar, name: file.name });
+    setSubiendo(demo.id);
+    const url = `/assets/logos-demo/${demo.file}`;
+    const img = new Image();
+    const inicio = Date.now();
+    img.onload = () => {
+      const ar = img.naturalWidth && img.naturalHeight ? img.naturalWidth / img.naturalHeight : 1;
+      window.setTimeout(() => {
+        setLogo({ id: demo.id, original: url, ar, name: demo.name });
         setSinFondo(false);
-        setPos((p) => ({ ...p, w: Math.min(Math.max(p.w, 12), 30) }));
-      };
-      img.onerror = () => setError("No pudimos leer esa imagen.");
-      img.src = url;
+        setSubiendo(null);
+        setPos((p) => ({ ...p, w: ar < 1.2 ? 9 : 14 }));
+      }, Math.max(0, 700 - (Date.now() - inicio)));
     };
-    reader.readAsDataURL(file);
+    img.onerror = () => {
+      setSubiendo(null);
+      setError("No pudimos cargar ese logo.");
+    };
+    img.src = url;
   }, []);
 
   // Arrastrar para mover y la esquina para cambiar el tamaño (en % del lienzo).
@@ -279,55 +283,65 @@ export default function Disenos() {
                 </div>
               </div>
 
-              {/* Herramientas básicas del lienzo */}
-              <div
-                className="flex flex-wrap items-center gap-2 border-t border-gray-100 bg-gray-50/60 px-4 py-3"
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  cargar(e.dataTransfer.files?.[0]);
-                }}
-              >
-                <input
-                  ref={inputRef}
-                  type="file"
-                  accept="image/png,image/jpeg,image/webp,image/svg+xml"
-                  className="sr-only"
-                  onChange={(e) => {
-                    cargar(e.target.files?.[0]);
-                    e.target.value = "";
-                  }}
-                />
-                <button
-                  type="button"
-                  onClick={() => inputRef.current?.click()}
-                  className="btn-sm bg-brand text-white hover:brightness-110"
-                >
-                  {logo ? "Cambiar logo" : "Sube tu logo"}
-                </button>
-                <label className={`inline-flex items-center gap-2 rounded-lg px-2.5 py-1 text-xs ring-1 ${logo ? "bg-white text-gray-700 ring-gray-200" : "cursor-not-allowed bg-gray-100 text-gray-400 ring-gray-200"}`}>
-                  <input type="checkbox" disabled={!logo} checked={sinFondo} onChange={(e) => setSinFondo(e.target.checked)} className="accent-[var(--color-brand)]" />
-                  Quitar fondo
-                </label>
-                {logo && sinFondo && (
-                  <label className="inline-flex items-center gap-2 text-xs text-gray-600">
-                    Intensidad
-                    <input type="range" min={5} max={120} value={tolerancia} onChange={(e) => setTolerancia(Number(e.target.value))} className="w-24 accent-[var(--color-brand)]" />
+              {/* Galería de logos de ejemplo + herramientas básicas del lienzo */}
+              <div className="border-t border-gray-100 bg-gray-50/60 px-4 py-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-xs font-semibold text-gray-700">Elige un logo de ejemplo</span>
+                  <span className="text-[11px] text-gray-500">Marcas ficticias · en LANA subes el logo real de tu cliente</span>
+                </div>
+                <div className="mt-2 grid grid-cols-4 gap-2">
+                  {logosDemo.map((d) => {
+                    const activo = logo?.id === d.id;
+                    const cargando = subiendo === d.id;
+                    return (
+                      <button
+                        key={d.id}
+                        type="button"
+                        onClick={() => elegir(d)}
+                        disabled={!!subiendo}
+                        aria-pressed={activo}
+                        aria-label={`Usar logo de ejemplo ${d.name}`}
+                        className={`group relative flex h-20 items-center justify-center overflow-hidden rounded-xl bg-white p-1.5 ring-2 transition ${
+                          activo ? "ring-brand" : "ring-gray-200 hover:ring-brand/50"
+                        } disabled:cursor-wait`}
+                      >
+                        <img src={`/assets/logos-demo/${d.file.replace(".jpg", "-thumb.jpg")}`} alt="" className="max-h-full max-w-full object-contain" />
+                        {cargando && (
+                          <span className="absolute inset-x-2 bottom-1.5 h-1 overflow-hidden rounded-full bg-gray-200" aria-hidden="true">
+                            <span className="block h-full w-full origin-left animate-[subir_.7s_ease-out_forwards] rounded-full bg-brand" />
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+                {subiendo && (
+                  <p className="mt-2 text-[11px] text-gray-500" role="status">
+                    Subiendo {logosDemo.find((d) => d.id === subiendo)?.name}…
+                  </p>
+                )}
+
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <label className={`inline-flex items-center gap-2 rounded-lg px-2.5 py-1 text-xs ring-1 ${logo ? "bg-white text-gray-700 ring-gray-200" : "cursor-not-allowed bg-gray-100 text-gray-400 ring-gray-200"}`}>
+                    <input type="checkbox" disabled={!logo} checked={sinFondo} onChange={(e) => setSinFondo(e.target.checked)} className="accent-[var(--color-brand)]" />
+                    Quitar fondo
                   </label>
-                )}
-                {logo && (
-                  <button type="button" onClick={() => { setLogo(null); setSinFondo(false); setPos(prenda.logo); }} className="btn-sm bg-white text-gray-700 ring-1 ring-gray-200 hover:bg-gray-50">
-                    Quitar
-                  </button>
-                )}
-                <span className="ml-auto text-[11px] text-gray-500">
-                  {logo ? "Arrastra el logo o usa las flechas. La esquina cambia el tamaño." : "También puedes soltar la imagen aquí."}
-                </span>
-                {error && <p className="w-full text-xs text-red-600" role="alert">{error}</p>}
-                <p className="w-full text-[11px] text-gray-400">
-                  Tu imagen no sale de tu navegador. Quitar fondo aquí elimina fondos de color sólido; en LANA tienes el
-                  editor completo.
-                </p>
+                  {logo && sinFondo && (
+                    <label className="inline-flex items-center gap-2 text-xs text-gray-600">
+                      Intensidad
+                      <input type="range" min={5} max={120} value={tolerancia} onChange={(e) => setTolerancia(Number(e.target.value))} className="w-24 accent-[var(--color-brand)]" />
+                    </label>
+                  )}
+                  {logo && (
+                    <button type="button" onClick={() => { setLogo(null); setSinFondo(false); setPos(prenda.logo); }} className="btn-sm bg-white text-gray-700 ring-1 ring-gray-200 hover:bg-gray-50">
+                      Quitar logo
+                    </button>
+                  )}
+                  <span className="ml-auto text-[11px] text-gray-500">
+                    {logo ? "Arrastra el logo o usa las flechas. La esquina cambia el tamaño." : "Toca un logo para colocarlo en la prenda."}
+                  </span>
+                </div>
+                {error && <p className="mt-2 text-xs text-red-600" role="alert">{error}</p>}
               </div>
 
               <div className="flex flex-wrap gap-2 border-t border-gray-100 px-4 py-3 text-[11px]">
