@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { quitarFondo } from "@/lib/quitarFondo";
 import Reveal from "./Reveal";
 import { Icon } from "./icons";
 
@@ -57,6 +58,106 @@ export default function Disenos() {
   const [color, setColor] = useState(colores[2]);
   const prenda = prendas.find((p) => p.id === prendaId)!;
   const mask = `url(${prenda.src}) center / contain no-repeat`;
+
+  // Logo del visitante (todo en el navegador; nada se sube a ningún servidor).
+  const [logo, setLogo] = useState<{ original: string; ar: number; name: string } | null>(null);
+  const [sinFondo, setSinFondo] = useState(false);
+  const [tolerancia, setTolerancia] = useState(40);
+  const [procesado, setProcesado] = useState<string | null>(null);
+  const [pos, setPos] = useState(prenda.logo);
+  const [error, setError] = useState("");
+  const lienzo = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Al cambiar de prenda, el logo vuelve al pecho izquierdo de esa prenda.
+  useEffect(() => {
+    setPos(prenda.logo);
+  }, [prenda]);
+
+  useEffect(() => {
+    if (!logo || !sinFondo) {
+      setProcesado(null);
+      return;
+    }
+    let vivo = true;
+    quitarFondo(logo.original, tolerancia)
+      .then((url) => vivo && setProcesado(url))
+      .catch(() => vivo && setError("No pudimos quitar el fondo de esta imagen."));
+    return () => {
+      vivo = false;
+    };
+  }, [logo, sinFondo, tolerancia]);
+
+  const cargar = useCallback((file: File | undefined) => {
+    setError("");
+    if (!file) return;
+    if (!/^image\/(png|jpe?g|webp|svg\+xml)$/.test(file.type)) {
+      setError("Sube una imagen PNG, JPG, WEBP o SVG.");
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setError("La imagen pesa más de 10 MB.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const url = String(reader.result);
+      const img = new Image();
+      img.onload = () => {
+        const ar = img.naturalWidth && img.naturalHeight ? img.naturalWidth / img.naturalHeight : 1;
+        setLogo({ original: url, ar, name: file.name });
+        setSinFondo(false);
+        setPos((p) => ({ ...p, w: Math.min(Math.max(p.w, 12), 30) }));
+      };
+      img.onerror = () => setError("No pudimos leer esa imagen.");
+      img.src = url;
+    };
+    reader.readAsDataURL(file);
+  }, []);
+
+  // Arrastrar para mover y la esquina para cambiar el tamaño (en % del lienzo).
+  const arrastre = useRef<{ modo: "mover" | "escalar"; x: number; y: number; pos: typeof pos } | null>(null);
+  const empezar = (modo: "mover" | "escalar") => (e: React.PointerEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    arrastre.current = { modo, x: e.clientX, y: e.clientY, pos };
+  };
+  const mover = (e: React.PointerEvent) => {
+    const a = arrastre.current;
+    const r = lienzo.current?.getBoundingClientRect();
+    if (!a || !r) return;
+    const dx = ((e.clientX - a.x) / r.width) * 100;
+    const dy = ((e.clientY - a.y) / r.height) * 100;
+    if (a.modo === "mover") {
+      setPos({ ...a.pos, x: clamp(a.pos.x + dx, 5, 95), y: clamp(a.pos.y + dy, 5, 95) });
+    } else {
+      setPos({ ...a.pos, w: clamp(a.pos.w + dx * 2, 5, 60) });
+    }
+  };
+  const soltar = () => {
+    arrastre.current = null;
+  };
+  const teclado = (e: React.KeyboardEvent) => {
+    const paso = e.shiftKey ? 2 : 0.5;
+    const d: Record<string, [number, number]> = { ArrowLeft: [-paso, 0], ArrowRight: [paso, 0], ArrowUp: [0, -paso], ArrowDown: [0, paso] };
+    if (!d[e.key]) return;
+    e.preventDefault();
+    setPos((p) => ({ ...p, x: clamp(p.x + d[e.key][0], 5, 95), y: clamp(p.y + d[e.key][1], 5, 95) }));
+  };
+
+  // Medidas: el lienzo de 800 px representa ~66 cm de ancho de prenda (talla M).
+  const CM_POR_PCT = 0.66;
+  const ar = logo ? logo.ar : 120 / 42;
+  const anchoCm = pos.w * CM_POR_PCT;
+  const altoCm = anchoCm / ar;
+  const medida = `${anchoCm.toFixed(1)} × ${altoCm.toFixed(1)} cm`;
+  // Ubicación: distancia horizontal al centro de la prenda y vertical desde el cuello (~6 % del lienzo).
+  const dxCm = (pos.x - 50) * CM_POR_PCT;
+  const dyCm = Math.max(0, (pos.y - 6) * CM_POR_PCT * 1.25);
+  const lado = Math.abs(dxCm) < 1.5 ? "Centro" : dxCm > 0 ? "Pecho izquierdo" : "Pecho derecho";
+  const ubicacion = `${lado} · ${Math.abs(dxCm).toFixed(1)} cm del centro · ${dyCm.toFixed(1)} cm desde el cuello`;
+  const srcLogo = logo ? procesado || logo.original : null;
 
   return (
     <section id="disenos" className="relative">
@@ -124,7 +225,7 @@ export default function Disenos() {
               </div>
 
               <div className="relative bg-[radial-gradient(circle_at_center,#f5f4fa,#e9e8f1)] px-4 py-6">
-                <div className="relative mx-auto aspect-[4/5] w-full max-w-[400px]">
+                <div ref={lienzo} className="relative mx-auto aspect-[4/5] w-full max-w-[400px]">
                   {/* Foto de la prenda (blanca) + capa de color con la silueta como máscara */}
                   <img
                     src={prenda.src}
@@ -143,29 +244,97 @@ export default function Disenos() {
                       mask,
                     }}
                   />
-                  {/* Logo colocado */}
+                  {/* Logo colocado: se arrastra, se escala desde la esquina y se mueve con flechas */}
                   <div
-                    key={prendaId}
-                    className="animate-appear absolute -translate-x-1/2 -translate-y-1/2"
-                    style={{ left: `${prenda.logo.x}%`, top: `${prenda.logo.y}%`, width: `${prenda.logo.w}%` }}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Logo colocado, ${medida}. Arrastra para mover o usa las flechas.`}
+                    onPointerDown={empezar("mover")}
+                    onPointerMove={mover}
+                    onPointerUp={soltar}
+                    onPointerCancel={soltar}
+                    onKeyDown={teclado}
+                    className="absolute -translate-x-1/2 -translate-y-1/2 cursor-grab touch-none select-none focus:outline-none active:cursor-grabbing"
+                    style={{ left: `${pos.x}%`, top: `${pos.y}%`, width: `${pos.w}%` }}
                   >
                     <div className="relative rounded-[2px] outline outline-2 outline-offset-2 outline-brand">
-                      <LogoEjemplo />
-                      <span className="absolute -right-2 -bottom-2 h-3 w-3 rounded-full border-2 border-white bg-brand shadow" aria-hidden="true" />
-                      <span className="absolute -top-5 left-1/2 h-2.5 w-2.5 -translate-x-1/2 rounded-full border-2 border-white bg-brand shadow" aria-hidden="true" />
+                      {srcLogo ? (
+                        <img src={srcLogo} alt={logo?.name || "Tu logo"} draggable={false} className="block h-auto w-full" />
+                      ) : (
+                        <LogoEjemplo />
+                      )}
+                      <span
+                        onPointerDown={empezar("escalar")}
+                        onPointerMove={mover}
+                        onPointerUp={soltar}
+                        onPointerCancel={soltar}
+                        className="absolute -right-3 -bottom-3 h-5 w-5 cursor-nwse-resize touch-none rounded-full border-2 border-white bg-brand shadow"
+                        aria-hidden="true"
+                      />
                     </div>
-                    <span className="absolute left-1/2 top-full mt-2.5 -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-900 px-2 py-0.5 text-[10px] font-semibold text-white">
-                      {prenda.cm}
+                    <span className="pointer-events-none absolute left-1/2 top-full mt-3 -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-900 px-2 py-0.5 text-[10px] font-semibold text-white">
+                      {medida}
                     </span>
                   </div>
                 </div>
               </div>
 
+              {/* Herramientas básicas del lienzo */}
+              <div
+                className="flex flex-wrap items-center gap-2 border-t border-gray-100 bg-gray-50/60 px-4 py-3"
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  cargar(e.dataTransfer.files?.[0]);
+                }}
+              >
+                <input
+                  ref={inputRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                  className="sr-only"
+                  onChange={(e) => {
+                    cargar(e.target.files?.[0]);
+                    e.target.value = "";
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => inputRef.current?.click()}
+                  className="btn-sm bg-brand text-white hover:brightness-110"
+                >
+                  {logo ? "Cambiar logo" : "Sube tu logo"}
+                </button>
+                <label className={`inline-flex items-center gap-2 rounded-lg px-2.5 py-1 text-xs ring-1 ${logo ? "bg-white text-gray-700 ring-gray-200" : "cursor-not-allowed bg-gray-100 text-gray-400 ring-gray-200"}`}>
+                  <input type="checkbox" disabled={!logo} checked={sinFondo} onChange={(e) => setSinFondo(e.target.checked)} className="accent-[var(--color-brand)]" />
+                  Quitar fondo
+                </label>
+                {logo && sinFondo && (
+                  <label className="inline-flex items-center gap-2 text-xs text-gray-600">
+                    Intensidad
+                    <input type="range" min={5} max={120} value={tolerancia} onChange={(e) => setTolerancia(Number(e.target.value))} className="w-24 accent-[var(--color-brand)]" />
+                  </label>
+                )}
+                {logo && (
+                  <button type="button" onClick={() => { setLogo(null); setSinFondo(false); setPos(prenda.logo); }} className="btn-sm bg-white text-gray-700 ring-1 ring-gray-200 hover:bg-gray-50">
+                    Quitar
+                  </button>
+                )}
+                <span className="ml-auto text-[11px] text-gray-500">
+                  {logo ? "Arrastra el logo o usa las flechas. La esquina cambia el tamaño." : "También puedes soltar la imagen aquí."}
+                </span>
+                {error && <p className="w-full text-xs text-red-600" role="alert">{error}</p>}
+                <p className="w-full text-[11px] text-gray-400">
+                  Tu imagen no sale de tu navegador. Quitar fondo aquí elimina fondos de color sólido; en LANA tienes el
+                  editor completo.
+                </p>
+              </div>
+
               <div className="flex flex-wrap gap-2 border-t border-gray-100 px-4 py-3 text-[11px]">
                 <Chip strong>Posición 1</Chip>
                 <Chip>{prenda.vista}</Chip>
-                <Chip>{prenda.cm}</Chip>
-                <Chip>{prenda.desde}</Chip>
+                <Chip>{medida}</Chip>
+                <Chip>{ubicacion}</Chip>
               </div>
             </div>
 
@@ -226,4 +395,8 @@ function LogoEjemplo() {
       </text>
     </svg>
   );
+}
+
+function clamp(v: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, v));
 }
