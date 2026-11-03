@@ -1,5 +1,6 @@
 import Legacy from "./Legacy";
 import PhoneChat from "./PhoneChat";
+import { WA_CREAR_CUENTA } from "@/lib/whatsapp";
 
 /**
  * Hero adaptado de "Hero with Mockup" (serafimcloud, 21st.dev): titular con
@@ -34,11 +35,12 @@ export default function Hero() {
             </p>
             <div className="animate-appear flex flex-wrap items-center justify-center gap-3 opacity-0 [animation-delay:360ms]">
               <a
-                href="#precios"
-                data-demo-request-open="true"
+                href={WA_CREAR_CUENTA}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="btn group bg-[linear-gradient(to_bottom,var(--color-brand),var(--color-brand-deep))] text-white shadow-brand/30 hover:brightness-110"
               >
-                Solicitar una demostración
+                Crear cuenta gratis
                 <span className="ml-1 text-white/60 transition-transform group-hover:translate-x-0.5">-&gt;</span>
               </a>
               <a href="#demo" data-demo-open="true" className="btn bg-white text-gray-800 ring-1 ring-gray-200 hover:bg-gray-50">
@@ -46,7 +48,7 @@ export default function Hero() {
               </a>
             </div>
             <p className="animate-appear mt-4 text-xs text-gray-500 opacity-0 [animation-delay:480ms]">
-              Proveedor tecnológico verificado por Meta · Beta con 20 lugares de Fundador
+              14 días de prueba gratis, sin tarjeta · Integración en aproximadamente una semana · Proveedor tecnológico verificado por Meta
             </p>
           </div>
 

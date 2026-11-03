@@ -23,8 +23,7 @@ export default function Page() {
         <Legacy name="cta" />
       </main>
       <Legacy name="footer" />
-      {/* Diálogos que controla public/lana.js (beta y demo de chat). */}
-      <Legacy name="beta" />
+      {/* Diálogo de demo del chat, controlado por public/lana.js. */}
       <Legacy name="demo" />
     </div>
   );
