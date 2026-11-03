@@ -92,3 +92,8 @@ html {
   .reveal { opacity: 1; transform: none; transition: none; }
   .flow-line { stroke-dashoffset: 0; transition: none; }
 }
+
+@keyframes subir {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
