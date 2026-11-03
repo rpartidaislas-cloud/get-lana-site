@@ -27,6 +27,7 @@ const integraciones: { name: string; src: string; w: number }[] = [
   { name: "Openpay by BBVA", src: "/assets/integraciones/openpay.png", w: 120 },
   { name: "Shopify", src: "/assets/integraciones/shopify.png", w: 104 },
   { name: "Notion", src: "/assets/integraciones/notion.png", w: 87 },
+  { name: "HubSpot", src: "/assets/integraciones/hubspot.png", w: 103 },
 ];
 
 export default function Marquee() {
