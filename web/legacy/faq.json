@@ -12,15 +12,15 @@
   "a": "<p class=\"px-4 pb-3\">Meta cobra por conversación de WhatsApp Business según el tipo de mensaje y el país; Messenger e Instagram no tienen costo. Esos cargos se pagan directamente a Meta y no están incluidos en el precio de LANA.</p>"
  },
  {
-  "q": "¿Cuánto tarda la puesta en marcha?",
-  "a": "<p class=\"px-4 pb-3\">Normalmente entre uno y tres días hábiles: conectamos tus canales, cargamos tu catálogo y reglas de arte, y configuramos el estilo de atención de la IA contigo en una sesión guiada.</p>"
+  "q": "¿Cuánto tarda la integración?",
+  "a": "<p class=\"px-4 pb-3\">Aproximadamente una semana: conectamos tus canales de WhatsApp, Messenger e Instagram, cargamos tu catálogo y tus reglas de precio y arte, y configuramos contigo el estilo de atención de la IA en sesiones guiadas. Mientras tanto ya puedes usar tu cuenta.</p>"
  },
  {
-  "q": "¿Qué pasa cuando termine la Beta?",
-  "a": "<p class=\"px-4 pb-3\">Tu suscripción continúa sin interrupciones. La condición de Fundador no es un precio de por vida, pero cualquier cambio de tarifa se avisa con anticipación, y conservas el 30% de descuento en Operación y Multisucursal durante sus primeros 12 meses.</p>"
+  "q": "¿Cómo funciona la prueba gratuita de 14 días?",
+  "a": "<p class=\"px-4 pb-3\">Eliges un plan, creas tu cuenta por WhatsApp y usas todo lo que incluye durante 14 días sin registrar tarjeta. Al terminar decides si continúas; si no, tu cuenta pasa al plan Gratis sin ningún cargo. El plan Gratis no caduca.</p>"
  },
  {
-  "q": "¿Puedo cancelar?",
-  "a": "<p class=\"px-4 pb-3\">Sí, en cualquier momento y sin penalización. Tu acceso se mantiene hasta el final del periodo pagado y puedes solicitar la eliminación de tus datos desde la página correspondiente.</p>"
+  "q": "¿Puedo cancelar o cambiar de plan?",
+  "a": "<p class=\"px-4 pb-3\">Sí, en cualquier momento y sin penalización. Puedes subir o bajar de plan desde el panel; tu acceso se mantiene hasta el final del periodo pagado y puedes solicitar la eliminación de tus datos desde la página correspondiente.</p>"
  }
 ]

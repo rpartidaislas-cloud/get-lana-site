@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { WA_CREAR_CUENTA } from "@/lib/whatsapp";
 
 const links = [
   { href: "#producto", label: "Producto" },
@@ -44,8 +45,8 @@ export default function Header() {
               </a>
             </li>
             <li>
-              <a href="#precios" data-demo-request-open="true" className="btn-sm bg-gray-900 text-white shadow-sm hover:bg-gray-800">
-                Solicitar demo
+              <a href={WA_CREAR_CUENTA} target="_blank" rel="noopener noreferrer" className="btn-sm bg-gray-900 text-white shadow-sm hover:bg-gray-800">
+                Crear cuenta gratis
               </a>
             </li>
             <li className="md:hidden">

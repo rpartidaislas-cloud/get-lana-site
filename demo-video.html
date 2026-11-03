@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Estudio de demostración de LANA para grabar conversaciones comerciales con IA.">
+  <title>Estudio de demostración — LANA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --lana-ui-bg:#F7F8FA;--lana-ui-surface:#FFFFFF;--lana-ui-surface-subtle:#F2F4F7;
+      --lana-ui-border:#E4E7EC;--lana-ui-border-strong:#D0D5DD;--lana-ui-text:#101828;
+      --lana-ui-text-secondary:#475467;--lana-ui-text-muted:#667085;--lana-ui-brand:#6941C6;
+      --lana-ui-brand-hover:#53389E;--lana-ui-brand-soft:#F4F0FF;--lana-ui-success:#16803C;
+      --lana-ui-success-soft:#EDF9F0;--lana-ui-info:#175CD3;--lana-ui-dark:#171A21;
+      --lana-ui-dark-subtle:#1E222B;--lana-ui-dark-border:#2B303B;--lana-ui-dark-text:#F2F4F7;
+      --lana-ui-dark-muted:#98A2B3;--channel:#16803C;--channel-soft:#EDF9F0;
+      --shadow:0 20px 60px rgba(16,24,40,.18);--ease:cubic-bezier(.22,1,.36,1);
+    }
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--lana-ui-text)}
+    body{min-width:320px;background:var(--lana-ui-dark);overflow-x:hidden}.button{min-height:44px;border:1px solid var(--lana-ui-border-strong);border-radius:8px;background:var(--lana-ui-surface);color:var(--lana-ui-text);padding:0 16px;font-weight:650;cursor:pointer;transition:transform 160ms var(--ease),background 160ms ease,border 160ms ease}.button:hover{transform:translateY(-1px);border-color:var(--lana-ui-text-muted)}.button:active{transform:scale(.98)}.button-primary{background:var(--lana-ui-brand);border-color:var(--lana-ui-brand);color:#fff}.button-primary:hover{background:var(--lana-ui-brand-hover);border-color:var(--lana-ui-brand-hover)}button:focus-visible,input:focus-visible{outline:3px solid rgba(105,65,198,.25);outline-offset:2px}
+    .studio{min-height:100vh;display:grid;grid-template-columns:minmax(280px,360px) minmax(520px,1fr)}
+    .controls{padding:32px;display:flex;flex-direction:column;border-right:1px solid var(--lana-ui-dark-border);background:var(--lana-ui-dark-subtle);color:var(--lana-ui-dark-text)}
+    .brand{display:flex;align-items:center;gap:14px}.brand img{width:116px;height:36px;object-fit:contain}.brand span{padding-left:14px;border-left:1px solid var(--lana-ui-dark-border);color:var(--lana-ui-dark-muted);font-size:12px}
+    .controls h1{font:700 30px/1.12 Manrope,Inter,sans-serif;letter-spacing:-.035em;margin:48px 0 12px}.controls>p{color:var(--lana-ui-dark-muted);font-size:14px;line-height:1.65;margin:0 0 28px}.control-group{margin-bottom:24px}.control-label{display:block;color:var(--lana-ui-dark-muted);font-size:12px;font-weight:650;margin-bottom:9px}.channels{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.channel{min-height:44px;border:1px solid var(--lana-ui-dark-border);border-radius:8px;background:var(--lana-ui-dark);color:var(--lana-ui-dark-muted);font-size:12px;font-weight:650;cursor:pointer}.channel[aria-pressed="true"]{border-color:#9B8AFB;background:rgba(155,138,251,.12);color:var(--lana-ui-dark-text)}.control-actions{display:grid;gap:10px}.controls .button:not(.button-primary){background:transparent;border-color:var(--lana-ui-dark-border);color:var(--lana-ui-dark-text)}.record-tip{margin-top:auto;padding-top:24px;color:var(--lana-ui-dark-muted);font-size:12px;line-height:1.55}.record-tip strong{display:block;color:var(--lana-ui-dark-text);margin-bottom:5px}
+    .stage{position:relative;min-height:100vh;display:grid;place-items:center;padding:34px;overflow:hidden;background:var(--lana-ui-bg)}.stage::before,.stage::after{content:"";position:absolute;background:var(--lana-ui-border);opacity:.55}.stage::before{width:1px;height:100%;left:50%}.stage::after{height:1px;width:100%;top:50%}.stage-caption{position:absolute;top:22px;left:26px;display:flex;align-items:center;gap:8px;color:var(--lana-ui-text-muted);font-size:12px;font-weight:600}.stage-caption::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--lana-ui-success)}
+    .phone{position:relative;z-index:2;width:min(390px,calc(100vw - 42px));height:min(844px,calc(100vh - 44px));min-height:620px;padding:10px;border-radius:48px;background:var(--lana-ui-dark);box-shadow:var(--shadow);transition:transform 420ms var(--ease)}.phone::before{content:"";position:absolute;z-index:6;top:15px;left:50%;width:92px;height:25px;transform:translateX(-50%);border-radius:18px;background:var(--lana-ui-dark)}.phone-screen{height:100%;border-radius:39px;overflow:hidden;background:var(--lana-ui-bg);display:flex;flex-direction:column}.phone-status{height:34px;padding:10px 22px 0;display:flex;justify-content:space-between;align-items:flex-start;background:var(--lana-ui-surface);font-size:10px;font-weight:700}.signal{display:flex;gap:4px;align-items:center}.signal i{display:block;width:4px;border-radius:2px;background:var(--lana-ui-text)}.signal i:nth-child(1){height:4px}.signal i:nth-child(2){height:7px}.signal i:nth-child(3){height:10px}
+    .chat-header{min-height:68px;padding:10px 14px;display:flex;align-items:center;gap:11px;background:var(--lana-ui-surface);border-bottom:1px solid var(--lana-ui-border)}.back{width:28px;height:44px;display:grid;place-items:center;border:0;background:transparent;color:var(--lana-ui-text-secondary)}.back svg,.header-action svg,.composer button svg,.attachment-button svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.avatar{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--lana-ui-brand);color:#fff;font:700 16px Manrope,Inter,sans-serif}.contact{min-width:0;flex:1}.contact strong{display:block;font-size:14px}.contact span{display:flex;align-items:center;gap:5px;color:var(--lana-ui-success);font-size:11px;margin-top:3px}.contact span::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}.header-actions{display:flex}.header-action{width:36px;height:40px;display:grid;place-items:center;border:0;background:transparent;color:var(--lana-ui-text-secondary)}
+    .context-bar{min-height:46px;padding:8px 15px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--lana-ui-surface);border-bottom:1px solid var(--lana-ui-border)}.context-channel{display:flex;align-items:center;gap:7px;color:var(--channel);font-size:11px;font-weight:700}.context-channel svg{width:16px;height:16px}.ai-status{padding:5px 8px;border-radius:999px;background:var(--lana-ui-brand-soft);color:var(--lana-ui-brand);font-size:10px;font-weight:700}
+    .messages{position:relative;flex:1;overflow-y:auto;padding:18px 14px 14px;scroll-behavior:smooth;background:var(--lana-ui-bg)}.day{text-align:center;margin-bottom:14px}.day span{display:inline-block;padding:5px 9px;border:1px solid var(--lana-ui-border);border-radius:999px;background:var(--lana-ui-surface);color:var(--lana-ui-text-muted);font-size:10px}.message-row{display:flex;margin:8px 0;animation:messageIn 320ms var(--ease) both}.message-row.is-user{justify-content:flex-end}.bubble{max-width:82%;padding:10px 11px 7px;border:1px solid var(--lana-ui-border);border-radius:13px 13px 13px 4px;background:var(--lana-ui-surface);font-size:12.5px;line-height:1.45;box-shadow:0 1px 2px rgba(16,24,40,.04)}.is-user .bubble{border-color:var(--lana-ui-border-strong);border-radius:13px 13px 4px 13px;background:var(--lana-ui-brand-soft)}.bubble time{display:block;margin-top:5px;text-align:right;color:var(--lana-ui-text-muted);font-size:9px}.attachment{display:flex;gap:9px;align-items:center;min-width:210px}.attachment-preview{width:48px;height:48px;border-radius:8px;border:1px solid var(--lana-ui-border);background:var(--lana-ui-surface);object-fit:cover}.attachment-copy{min-width:0}.attachment-copy strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11.5px}.attachment-copy span{color:var(--lana-ui-text-muted);font-size:10px}
+    .typing{display:flex;gap:4px;padding:12px 14px;width:max-content;border:1px solid var(--lana-ui-border);border-radius:13px 13px 13px 4px;background:var(--lana-ui-surface);animation:messageIn 260ms var(--ease) both}.typing i{width:6px;height:6px;border-radius:50%;background:var(--lana-ui-text-muted);animation:type 900ms infinite}.typing i:nth-child(2){animation-delay:120ms}.typing i:nth-child(3){animation-delay:240ms}
+    .quote{width:100%;min-width:270px;padding:0;overflow:hidden}.quote-head{padding:11px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--lana-ui-border)}.quote-head strong{font-size:12px}.quote-head span{padding:4px 7px;border-radius:999px;background:var(--lana-ui-success-soft);color:var(--lana-ui-success);font-size:9px;font-weight:700}.quote-body{padding:8px 12px}.quote-line{display:grid;grid-template-columns:1fr auto;gap:12px;padding:6px 0;color:var(--lana-ui-text-secondary);font-size:10.5px}.quote-line small{display:block;color:var(--lana-ui-text-muted);font-size:9px}.quote-line strong{color:var(--lana-ui-text);font-size:10.5px}.quote-total{margin-top:4px;padding-top:9px;border-top:1px solid var(--lana-ui-border);display:flex;justify-content:space-between;font-weight:700;font-size:12px}.quote-action{margin:3px 12px 12px;min-height:36px;width:calc(100% - 24px);border:0;border-radius:8px;background:var(--lana-ui-brand);color:#fff;font-weight:700;font-size:11px}
+    .composer-wrap{padding:9px 10px 12px;background:var(--lana-ui-surface);border-top:1px solid var(--lana-ui-border)}.composer{display:flex;align-items:flex-end;gap:6px}.attachment-button,.composer button{flex:0 0 42px;width:42px;height:42px;display:grid;place-items:center;border:1px solid var(--lana-ui-border-strong);border-radius:50%;background:var(--lana-ui-surface);color:var(--lana-ui-text-secondary);cursor:pointer}.composer button{border-color:var(--lana-ui-brand);background:var(--lana-ui-brand);color:#fff}.composer input[type="text"]{min-width:0;flex:1;height:42px;padding:0 13px;border:1px solid var(--lana-ui-border-strong);border-radius:21px;background:var(--lana-ui-surface);color:var(--lana-ui-text);font-size:12px}.composer input[type="file"]{position:absolute;width:1px;height:1px;opacity:0}.pending-file{display:none;margin:0 48px 7px;padding:7px 10px;border-radius:8px;background:var(--lana-ui-brand-soft);color:var(--lana-ui-brand);font-size:10px;font-weight:650}.pending-file.is-visible{display:flex;justify-content:space-between}.pending-file button{border:0;background:transparent;color:inherit;cursor:pointer}
+    .clean-mode .controls,.clean-mode .stage-caption{display:none}.clean-mode .studio{grid-template-columns:1fr}.clean-mode .stage{padding:24px}.clean-mode .phone{height:min(900px,calc(100vh - 48px));transform:scale(1.02)}
+    .toast{position:fixed;z-index:20;right:24px;bottom:24px;max-width:320px;padding:12px 14px;border:1px solid var(--lana-ui-border);border-radius:10px;background:var(--lana-ui-surface);box-shadow:var(--shadow);font-size:12px;transform:translateY(20px);opacity:0;pointer-events:none;transition:all 250ms var(--ease)}.toast.is-visible{transform:none;opacity:1}
+    @keyframes messageIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}@keyframes type{0%,60%,100%{opacity:.35;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+    @media(max-width:900px){.studio{grid-template-columns:1fr}.controls{padding:20px;border-right:0;border-bottom:1px solid var(--lana-ui-dark-border)}.controls h1{margin-top:24px}.record-tip{margin-top:8px}.stage{min-height:900px}.phone{height:820px}}
+    @media(max-width:480px){.controls{padding:18px}.stage{padding:14px;min-height:760px}.phone{width:100%;height:730px;min-height:0;border-radius:36px;padding:7px}.phone-screen{border-radius:30px}.phone::before{top:11px}.quote{min-width:245px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+  <main class="studio">
+    <aside class="controls" aria-label="Controles de la demostración">
+      <div class="brand"><img src="icons/LANACLARO.png" alt="LANA"><span>Estudio de demostración</span></div>
+      <h1>Graba una conversación que vende.</h1>
+      <p>Escribe directamente en el celular o reproduce el ejemplo completo. La demostración funciona de forma local y no utiliza datos reales.</p>
+      <div class="control-group">
+        <span class="control-label">Canal de entrada</span>
+        <div class="channels" role="group" aria-label="Elegir canal">
+          <button class="channel" type="button" data-channel="whatsapp" aria-pressed="true">WhatsApp</button>
+          <button class="channel" type="button" data-channel="instagram" aria-pressed="false">Instagram</button>
+          <button class="channel" type="button" data-channel="messenger" aria-pressed="false">Messenger</button>
+        </div>
+      </div>
+      <div class="control-actions">
+        <button class="button button-primary" id="playDemo" type="button">Reproducir ejemplo completo</button>
+        <button class="button" id="cleanMode" type="button">Activar modo limpio para grabar</button>
+        <button class="button" id="resetDemo" type="button">Reiniciar conversación</button>
+      </div>
+      <div class="record-tip"><strong>Consejo para grabar</strong>Usa OBS o la grabadora de Windows. Activa “modo limpio” y presiona la tecla C para volver a mostrar los controles.</div>
+    </aside>
+
+    <section class="stage" aria-label="Vista del teléfono">
+      <div class="stage-caption">Demostración segura · Sin datos reales</div>
+      <div class="phone" aria-label="Teléfono de demostración">
+        <div class="phone-screen">
+          <div class="phone-status"><span id="clock">9:41</span><span class="signal" aria-label="Señal completa"><i></i><i></i><i></i></span></div>
+          <header class="chat-header">
+            <button class="back" type="button" aria-label="Volver"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+            <div class="avatar">BE</div>
+            <div class="contact"><strong>Bordados Express</strong><span>Atención disponible</span></div>
+            <div class="header-actions"><button class="header-action" type="button" aria-label="Videollamada"><svg viewBox="0 0 24 24"><path d="m15 10 4.5-2.5v9L15 14z"/><rect x="3" y="6" width="12" height="12" rx="2"/></svg></button><button class="header-action" type="button" aria-label="Información"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button></div>
+          </header>
+          <div class="context-bar"><span class="context-channel" id="channelLabel"></span><span class="ai-status">LANA IA atendiendo</span></div>
+          <div class="messages" id="messages" role="log" aria-live="polite"><div class="day"><span>Hoy</span></div></div>
+          <div class="composer-wrap">
+            <div class="pending-file" id="pendingFile"><span></span><button type="button" id="removeFile" aria-label="Quitar archivo">Quitar</button></div>
+            <form class="composer" id="chatForm">
+              <label class="attachment-button" for="fileInput" aria-label="Adjuntar logotipo"><svg viewBox="0 0 24 24"><path d="m20.5 11.5-8.8 8.8a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 1 1-2.8-2.8l8.5-8.5"/></svg></label>
+              <input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml">
+              <input id="messageInput" type="text" maxlength="240" autocomplete="off" placeholder="Escribe como cliente..." aria-label="Mensaje">
+              <button type="submit" aria-label="Enviar mensaje"><svg viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4zM22 2 11 13"/></svg></button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div class="toast" id="toast" role="status"></div>
+  <script>
+    (function(){
+      var messages=document.getElementById('messages'),form=document.getElementById('chatForm'),input=document.getElementById('messageInput');
+      var fileInput=document.getElementById('fileInput'),pendingFile=document.getElementById('pendingFile'),channelLabel=document.getElementById('channelLabel');
+      var attached=null,logoReady=false,quantity=20,busy=false,step=0,timers=[];
+      var channelData={
+        whatsapp:{label:'WhatsApp Business',color:'#16803C',soft:'#EDF9F0',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M20 11.5a8 8 0 0 1-11.8 7L4 20l1.5-4A8 8 0 1 1 20 11.5Z"/><path d="M9 8.5c.6 2.5 2 4 4.5 5"/></svg>'},
+        instagram:{label:'Instagram',color:'#C13584',soft:'#FFF0F7',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg>'},
+        messenger:{label:'Messenger',color:'#175CD3',soft:'#EFF8FF',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M21 11.5a8.5 8.5 0 0 1-12.7 7.4L3 21l1.5-4.8A8.5 8.5 0 1 1 21 11.5Z"/><path d="m8 14 3-4 2.5 2 3-2"/></svg>'}
+      };
+      function now(){return new Date().toLocaleTimeString('es-MX',{hour:'numeric',minute:'2-digit'}).replace(' a. m.','').replace(' p. m.','')}
+      function scroll(){messages.scrollTop=messages.scrollHeight}
+      function addMessage(text,user){var row=document.createElement('div');row.className='message-row'+(user?' is-user':'');var bubble=document.createElement('div');bubble.className='bubble';bubble.textContent=text;var time=document.createElement('time');time.textContent=now();bubble.appendChild(time);row.appendChild(bubble);messages.appendChild(row);scroll();return row}
+      function addAttachment(file){var row=document.createElement('div');row.className='message-row is-user';var bubble=document.createElement('div');bubble.className='bubble attachment';var img=document.createElement('img');img.className='attachment-preview';img.alt='Vista previa del logotipo';img.src=file.url;var copy=document.createElement('div');copy.className='attachment-copy';var strong=document.createElement('strong');strong.textContent=file.name;var span=document.createElement('span');span.textContent='Logotipo para cotizar';copy.append(strong,span);bubble.append(img,copy);row.appendChild(bubble);messages.appendChild(row);scroll()}
+      function typing(delay){busy=true;var row=document.createElement('div');row.className='message-row';var dots=document.createElement('div');dots.className='typing';dots.innerHTML='<i></i><i></i><i></i>';row.appendChild(dots);messages.appendChild(row);scroll();return new Promise(function(resolve){var id=setTimeout(function(){row.remove();busy=false;resolve()},delay||850);timers.push(id)})}
+      function reply(text,delay){return typing(delay).then(function(){addMessage(text,false)})}
+      function addQuote(){var subtotal=quantity*85,total=subtotal+450;var row=document.createElement('div');row.className='message-row';var card=document.createElement('div');card.className='bubble quote';card.innerHTML='<div class="quote-head"><strong>Cotización LANA-2048</strong><span>Lista para revisar</span></div><div class="quote-body"><div class="quote-line"><div>Bordado frontal<small>8 × 5 cm · '+quantity+' piezas</small></div><strong>$85 c/u · $'+subtotal.toLocaleString('es-MX')+'</strong></div><div class="quote-line"><div>Digitalización de logotipo<small>Cargo único</small></div><strong>$450</strong></div><div class="quote-total"><span>Total estimado</span><span>$'+total.toLocaleString('es-MX')+' MXN</span></div></div><button class="quote-action" type="button">Revisar cotización</button>';row.appendChild(card);messages.appendChild(row);scroll()}
+      function respond(value){var text=value.toLowerCase();if(/hola|buen/.test(text))return reply('¡Hola! Soy el asistente del taller. Puedo ayudarte a cotizar bordado, DTF o serigrafía. ¿Qué necesitas personalizar?');if(/bord/.test(text)&&/camis|player|polo/.test(text))return reply('Perfecto. ¿Cuántas piezas necesitas y en qué zona quieres colocar el logotipo? Puedes adjuntar aquí la imagen del diseño.');var qty=text.match(/\b(\d{1,4})\b/);if(qty){quantity=Math.max(1,Number(qty[1]));step=2;if(!logoReady)return reply('Anotado. Para calcular el bordado necesito ver el logotipo. Toca el clip y adjunta la imagen.');return reply('Gracias. Detecté '+quantity+' piezas con bordado frontal. Estoy aplicando las reglas y precios del taller…',650).then(function(){return typing(900)}).then(addQuote)}if(/precio|cotiz|cu[aá]nto/.test(text)){if(logoReady){return reply('Prepararé el precio con el logotipo adjunto. ¿Cuántas piezas necesitas?')}return reply('Claro. Indícame el producto, la cantidad y adjunta tu logotipo para calcularlo.') }return reply('Entendido. Para ayudarte mejor, dime qué producto quieres personalizar y cuántas piezas necesitas.')}
+      function send(text){if(!text||busy)return Promise.resolve();addMessage(text,true);input.value='';return respond(text)}
+      function reset(){timers.forEach(clearTimeout);timers=[];busy=false;step=0;attached=null;logoReady=false;quantity=20;fileInput.value='';pendingFile.classList.remove('is-visible');messages.innerHTML='<div class="day"><span>Hoy</span></div>';addMessage('Hola, soy el asistente del taller. Puedo ayudarte a cotizar una idea y convertirla en un pedido organizado. ¿Qué necesitas personalizar?',false);input.focus()}
+      function demoFile(){return{name:'logotipo-empresa.png',url:'data:image/svg+xml;charset=utf-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160"><rect width="160" height="160" rx="20" fill="#101828"/><path d="M35 103 80 40l45 63h-24L80 73l-21 30z" fill="#fff"/><circle cx="80" cy="112" r="9" fill="#6941C6"/></svg>')}}
+      async function play(){if(busy)return;reset();await new Promise(function(r){timers.push(setTimeout(r,600))});addMessage('Hola, quiero bordar 20 camisas para mi equipo',true);await reply('¡Claro! Para 20 camisas puedo cotizar el bordado por pieza. ¿En qué zona irá y tienes el logotipo?',850);attached=demoFile();logoReady=true;addAttachment(attached);attached=null;await reply('Recibí el logotipo. ¿Confirmas bordado frontal de aproximadamente 8 × 5 cm?',850);addMessage('Sí, al frente. ¿Cuánto cuesta?',true);await reply('Aplicando el precio por volumen y el cargo único de digitalización…',700);await typing(850);addQuote()}
+      form.addEventListener('submit',function(e){e.preventDefault();var value=input.value.trim();if(attached){addAttachment(attached);attached=null;logoReady=true;fileInput.value='';pendingFile.classList.remove('is-visible');if(!value){reply('Recibí el logotipo. Ahora dime qué producto y cuántas piezas necesitas.');return}}send(value)});
+      fileInput.addEventListener('change',function(){var file=fileInput.files&&fileInput.files[0];if(!file)return;var reader=new FileReader();reader.onload=function(){attached={name:file.name,url:String(reader.result)};pendingFile.querySelector('span').textContent='Adjunto: '+file.name;pendingFile.classList.add('is-visible');input.focus()};reader.readAsDataURL(file)});
+      document.getElementById('removeFile').addEventListener('click',function(){attached=null;fileInput.value='';pendingFile.classList.remove('is-visible')});
+      document.getElementById('resetDemo').addEventListener('click',reset);document.getElementById('playDemo').addEventListener('click',play);
+      function toggleClean(){document.body.classList.toggle('clean-mode');var button=document.getElementById('cleanMode');button.textContent=document.body.classList.contains('clean-mode')?'Mostrar controles':'Activar modo limpio para grabar'}
+      document.getElementById('cleanMode').addEventListener('click',toggleClean);document.addEventListener('keydown',function(e){if((e.key==='c'||e.key==='C')&&!/input|textarea/i.test(document.activeElement.tagName))toggleClean()});
+      document.querySelectorAll('[data-channel]').forEach(function(button){button.addEventListener('click',function(){document.querySelectorAll('[data-channel]').forEach(function(b){b.setAttribute('aria-pressed','false')});button.setAttribute('aria-pressed','true');var data=channelData[button.dataset.channel];document.documentElement.style.setProperty('--channel',data.color);document.documentElement.style.setProperty('--channel-soft',data.soft);channelLabel.innerHTML=data.icon+'<span>'+data.label+'</span>'})});
+      channelLabel.innerHTML=channelData.whatsapp.icon+'<span>'+channelData.whatsapp.label+'</span>';document.getElementById('clock').textContent=now();reset();
+    })();
+  </script>
+</body>
+</html>
