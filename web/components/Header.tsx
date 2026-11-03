@@ -22,8 +22,8 @@ export default function Header() {
   return (
     <header className="fixed top-2 z-30 w-full md:top-6">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="relative flex h-14 items-center justify-between gap-3 rounded-2xl bg-white/90 px-3 shadow-lg shadow-black/[0.03] backdrop-blur-xs before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:border before:border-transparent before:[background:linear-gradient(var(--color-gray-100),var(--color-gray-200))_border-box] before:[mask-composite:exclude]! before:[mask:linear-gradient(white_0_0)_padding-box,_linear-gradient(white_0_0)]">
-          <div className="flex flex-1 items-center gap-3">
+        <div className="relative flex h-14 items-center justify-between gap-6 rounded-2xl bg-white/90 px-3 shadow-lg shadow-black/[0.03] backdrop-blur-xs before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:border before:border-transparent before:[background:linear-gradient(var(--color-gray-100),var(--color-gray-200))_border-box] before:[mask-composite:exclude]! before:[mask:linear-gradient(white_0_0)_padding-box,_linear-gradient(white_0_0)]">
+          <div className="flex shrink-0 items-center gap-3">
             <a className="inline-flex items-center" aria-label="LANA, inicio" href="/">
               <img src="/icons/LANACLARO.png" alt="LANA" width={100} height={17} />
             </a>
@@ -32,14 +32,14 @@ export default function Header() {
               Proveedor tecnológico verificado
             </span>
           </div>
-          <nav className="hidden flex-1 items-center justify-center gap-5 text-sm font-medium text-gray-600 md:flex">
+          <nav className="hidden min-w-0 flex-1 items-center justify-center gap-5 text-sm font-medium text-gray-600 lg:flex">
             {links.map((l) => (
               <a key={l.href} className="whitespace-nowrap hover:text-gray-900" href={l.href}>
                 {l.label}
               </a>
             ))}
           </nav>
-          <ul className="flex flex-1 items-center justify-end gap-3">
+          <ul className="flex shrink-0 items-center justify-end gap-3">
             <li className="hidden sm:block">
               <a href="https://app.get-lana.com" className="btn-sm bg-white text-gray-800 shadow-sm hover:bg-gray-50">
                 Iniciar sesión
@@ -50,7 +50,7 @@ export default function Header() {
                 Crear cuenta gratis
               </a>
             </li>
-            <li className="md:hidden">
+            <li className="lg:hidden">
               <button
                 type="button"
                 aria-label={open ? "Cerrar menú" : "Abrir menú"}
@@ -66,7 +66,7 @@ export default function Header() {
           </ul>
         </div>
         {open && (
-          <nav className="mt-2 rounded-2xl bg-white p-3 shadow-lg md:hidden">
+          <nav className="mt-2 rounded-2xl bg-white p-3 shadow-lg lg:hidden">
             {links.map((l) => (
               <a
                 key={l.href}

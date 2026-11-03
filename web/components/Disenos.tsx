@@ -1,69 +1,163 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { quitarFondo } from "@/lib/quitarFondo";
 import Reveal from "./Reveal";
 import { Icon } from "./icons";
 
 /**
  * "Diseño sobre el producto": ilustra el editor de posición y arte de las
- * cotizaciones. El cliente ve cómo quedará el diseño sobre la prenda y
- * producción recibe la posición y medidas exactas. Ilustración propia con un
- * logo genérico (no se usan logos de clientes reales).
+ * cotizaciones con las mismas prendas fotográficas recoloreables que usa
+ * LANA (public/assets/prendas, recortadas del repo promodesk). El color se
+ * aplica multiplicando sobre la foto blanca con la propia silueta como
+ * máscara, igual que el configurador. Logo genérico de ejemplo.
  */
 
-type Vista = "Frente" | "Espalda" | "Manga";
-type Producto = {
+type Prenda = {
   id: string;
   label: string;
-  vistas: Vista[];
-  // Posición del logo por vista, en % del lienzo, y medidas mostradas.
-  pos: Partial<Record<Vista, { x: number; y: number; w: number; cm: string; desde: string }>>;
-  Silueta: (p: { vista: Vista; color: string }) => React.ReactElement;
+  src: string;
+  vista: string;
+  // Posición del logo en % del lienzo (800×1000) y ancho del logo en %.
+  logo: { x: number; y: number; w: number };
+  cm: string;
+  desde: string;
 };
 
-const productos: Producto[] = [
+const prendas: Prenda[] = [
   {
-    id: "camisa",
-    label: "Camisa",
-    vistas: ["Frente", "Espalda", "Manga"],
-    pos: {
-      Frente: { x: 61, y: 30, w: 15, cm: "6.0 × 2.1 cm", desde: "Pecho izquierdo · 20.2 cm desde el hombro" },
-      Espalda: { x: 50, y: 30, w: 34, cm: "24.0 × 8.4 cm", desde: "Centro · 9.0 cm bajo el cuello" },
-      Manga: { x: 50, y: 34, w: 30, cm: "5.0 × 1.8 cm", desde: "Manga izq. · 8.0 cm bajo el hombro" },
-    },
-    Silueta: Camisa,
+    id: "camisa-caballero",
+    label: "Camisa caballero",
+    src: "/assets/prendas/camisa-caballero-frontal.webp",
+    vista: "Frente",
+    logo: { x: 65.4, y: 29.8, w: 13 },
+    cm: "6.0 × 2.1 cm",
+    desde: "Pecho izquierdo · 20.2 cm desde el hombro",
   },
   {
-    id: "playera",
-    label: "Playera",
-    vistas: ["Frente", "Espalda"],
-    pos: {
-      Frente: { x: 50, y: 36, w: 32, cm: "22.0 × 7.7 cm", desde: "Centro · 8.0 cm bajo el cuello" },
-      Espalda: { x: 50, y: 26, w: 22, cm: "15.0 × 5.3 cm", desde: "Centro · 4.0 cm bajo el cuello" },
-    },
-    Silueta: Playera,
-  },
-  {
-    id: "gorra",
-    label: "Gorra",
-    vistas: ["Frente", "Espalda"],
-    pos: {
-      Frente: { x: 50, y: 42, w: 30, cm: "10.0 × 3.5 cm", desde: "Panel frontal · centrado" },
-      Espalda: { x: 50, y: 46, w: 20, cm: "6.0 × 2.1 cm", desde: "Panel trasero · sobre el ajustador" },
-    },
-    Silueta: Gorra,
+    id: "camisa-dama",
+    label: "Camisa dama",
+    src: "/assets/prendas/camisa-dama-frontal.webp",
+    vista: "Frente",
+    logo: { x: 63.9, y: 26.7, w: 12 },
+    cm: "5.5 × 1.9 cm",
+    desde: "Pecho izquierdo · 17.5 cm desde el hombro",
   },
 ];
 
-const colores = ["#2b2b30", "#1e3a8a", "#f4f4f5", "#7f1d1d"];
+const colores: { hex: string; name: string }[] = [
+  { hex: "#ffffff", name: "Blanco" },
+  { hex: "#9aa3b2", name: "Gris" },
+  { hex: "#24345e", name: "Azul marino" },
+  { hex: "#3a3a40", name: "Negro" },
+  { hex: "#7a2430", name: "Vino" },
+];
 
 export default function Disenos() {
-  const [prodId, setProdId] = useState("camisa");
-  const [vista, setVista] = useState<Vista>("Frente");
-  const [color, setColor] = useState(colores[0]);
-  const prod = productos.find((p) => p.id === prodId)!;
-  const v = prod.vistas.includes(vista) ? vista : "Frente";
-  const pos = prod.pos[v]!;
+  const [prendaId, setPrendaId] = useState(prendas[0].id);
+  const [color, setColor] = useState(colores[2]);
+  const prenda = prendas.find((p) => p.id === prendaId)!;
+  const mask = `url(${prenda.src}) center / contain no-repeat`;
+
+  // Logo del visitante (todo en el navegador; nada se sube a ningún servidor).
+  const [logo, setLogo] = useState<{ original: string; ar: number; name: string } | null>(null);
+  const [sinFondo, setSinFondo] = useState(false);
+  const [tolerancia, setTolerancia] = useState(40);
+  const [procesado, setProcesado] = useState<string | null>(null);
+  const [pos, setPos] = useState(prenda.logo);
+  const [error, setError] = useState("");
+  const lienzo = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Al cambiar de prenda, el logo vuelve al pecho izquierdo de esa prenda.
+  useEffect(() => {
+    setPos(prenda.logo);
+  }, [prenda]);
+
+  useEffect(() => {
+    if (!logo || !sinFondo) {
+      setProcesado(null);
+      return;
+    }
+    let vivo = true;
+    quitarFondo(logo.original, tolerancia)
+      .then((url) => vivo && setProcesado(url))
+      .catch(() => vivo && setError("No pudimos quitar el fondo de esta imagen."));
+    return () => {
+      vivo = false;
+    };
+  }, [logo, sinFondo, tolerancia]);
+
+  const cargar = useCallback((file: File | undefined) => {
+    setError("");
+    if (!file) return;
+    if (!/^image\/(png|jpe?g|webp|svg\+xml)$/.test(file.type)) {
+      setError("Sube una imagen PNG, JPG, WEBP o SVG.");
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setError("La imagen pesa más de 10 MB.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const url = String(reader.result);
+      const img = new Image();
+      img.onload = () => {
+        const ar = img.naturalWidth && img.naturalHeight ? img.naturalWidth / img.naturalHeight : 1;
+        setLogo({ original: url, ar, name: file.name });
+        setSinFondo(false);
+        setPos((p) => ({ ...p, w: Math.min(Math.max(p.w, 12), 30) }));
+      };
+      img.onerror = () => setError("No pudimos leer esa imagen.");
+      img.src = url;
+    };
+    reader.readAsDataURL(file);
+  }, []);
+
+  // Arrastrar para mover y la esquina para cambiar el tamaño (en % del lienzo).
+  const arrastre = useRef<{ modo: "mover" | "escalar"; x: number; y: number; pos: typeof pos } | null>(null);
+  const empezar = (modo: "mover" | "escalar") => (e: React.PointerEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    arrastre.current = { modo, x: e.clientX, y: e.clientY, pos };
+  };
+  const mover = (e: React.PointerEvent) => {
+    const a = arrastre.current;
+    const r = lienzo.current?.getBoundingClientRect();
+    if (!a || !r) return;
+    const dx = ((e.clientX - a.x) / r.width) * 100;
+    const dy = ((e.clientY - a.y) / r.height) * 100;
+    if (a.modo === "mover") {
+      setPos({ ...a.pos, x: clamp(a.pos.x + dx, 5, 95), y: clamp(a.pos.y + dy, 5, 95) });
+    } else {
+      setPos({ ...a.pos, w: clamp(a.pos.w + dx * 2, 5, 60) });
+    }
+  };
+  const soltar = () => {
+    arrastre.current = null;
+  };
+  const teclado = (e: React.KeyboardEvent) => {
+    const paso = e.shiftKey ? 2 : 0.5;
+    const d: Record<string, [number, number]> = { ArrowLeft: [-paso, 0], ArrowRight: [paso, 0], ArrowUp: [0, -paso], ArrowDown: [0, paso] };
+    if (!d[e.key]) return;
+    e.preventDefault();
+    setPos((p) => ({ ...p, x: clamp(p.x + d[e.key][0], 5, 95), y: clamp(p.y + d[e.key][1], 5, 95) }));
+  };
+
+  // Medidas: el lienzo de 800 px representa ~66 cm de ancho de prenda (talla M).
+  const CM_POR_PCT = 0.66;
+  const ar = logo ? logo.ar : 120 / 42;
+  const anchoCm = pos.w * CM_POR_PCT;
+  const altoCm = anchoCm / ar;
+  const medida = `${anchoCm.toFixed(1)} × ${altoCm.toFixed(1)} cm`;
+  // Ubicación: distancia horizontal al centro de la prenda y vertical desde el cuello (~6 % del lienzo).
+  const dxCm = (pos.x - 50) * CM_POR_PCT;
+  const dyCm = Math.max(0, (pos.y - 6) * CM_POR_PCT * 1.25);
+  const lado = Math.abs(dxCm) < 1.5 ? "Centro" : dxCm > 0 ? "Pecho izquierdo" : "Pecho derecho";
+  const ubicacion = `${lado} · ${Math.abs(dxCm).toFixed(1)} cm del centro · ${dyCm.toFixed(1)} cm desde el cuello`;
+  const srcLogo = logo ? procesado || logo.original : null;
 
   return (
     <section id="disenos" className="relative">
@@ -75,9 +169,9 @@ export default function Disenos() {
               Tu cliente ve cómo quedará antes de aprobar
             </h2>
             <p className="mt-4 text-lg text-gray-600">
-              Dentro de la cotización colocas el logo sobre la silueta del producto, en frente, espalda o mangas, con
-              medidas reales en centímetros. El cliente aprueba con una referencia visual y producción recibe exactamente
-              qué va, de qué tamaño y dónde.
+              Dentro de la cotización colocas el logo sobre la prenda real, en frente, espalda o mangas, con medidas en
+              centímetros. El cliente aprueba con una referencia visual y producción recibe exactamente qué va, de qué
+              tamaño y dónde.
             </p>
           </div>
 
@@ -89,16 +183,16 @@ export default function Disenos() {
                   <strong className="text-sm">Posición y arte</strong>
                   <span className="rounded-md bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-600">Posición 1</span>
                 </div>
-                <div className="flex flex-wrap gap-1.5" role="tablist" aria-label="Producto">
-                  {productos.map((p) => (
+                <div className="flex flex-wrap gap-1.5" role="tablist" aria-label="Prenda">
+                  {prendas.map((p) => (
                     <button
                       key={p.id}
                       type="button"
                       role="tab"
-                      aria-selected={p.id === prodId}
-                      onClick={() => setProdId(p.id)}
+                      aria-selected={p.id === prendaId}
+                      onClick={() => setPrendaId(p.id)}
                       className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
-                        p.id === prodId ? "bg-brand text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        p.id === prendaId ? "bg-brand text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                       }`}
                     >
                       {p.label}
@@ -108,62 +202,139 @@ export default function Disenos() {
               </div>
 
               <div className="flex flex-wrap items-center gap-2 border-b border-gray-100 px-4 py-2.5">
-                <div className="inline-flex overflow-hidden rounded-lg ring-1 ring-gray-200" role="tablist" aria-label="Vista">
-                  {prod.vistas.map((x) => (
-                    <button
-                      key={x}
-                      type="button"
-                      role="tab"
-                      aria-selected={x === v}
-                      onClick={() => setVista(x)}
-                      className={`px-3 py-1.5 text-xs font-medium ${x === v ? "bg-brand-soft text-brand-deep" : "bg-white text-gray-600 hover:bg-gray-50"}`}
-                    >
-                      {x === "Manga" ? "Lateral izq." : x}
-                    </button>
-                  ))}
+                <div className="inline-flex overflow-hidden rounded-lg text-xs ring-1 ring-gray-200">
+                  <span className="bg-brand-soft px-3 py-1.5 font-medium text-brand-deep">Frente</span>
+                  <span className="px-3 py-1.5 text-gray-400">Espalda</span>
+                  <span className="px-3 py-1.5 text-gray-400">Lateral izq.</span>
+                  <span className="px-3 py-1.5 text-gray-400">Lateral der.</span>
                 </div>
-                <span className="ml-auto text-[11px] text-gray-500">Color de la prenda</span>
+                <span className="ml-auto text-[11px] text-gray-500">Color: {color.name}</span>
                 <div className="flex gap-1.5">
                   {colores.map((c) => (
                     <button
-                      key={c}
+                      key={c.hex}
                       type="button"
-                      aria-label={`Color ${c}`}
-                      aria-pressed={c === color}
+                      aria-label={`Color ${c.name}`}
+                      aria-pressed={c.hex === color.hex}
                       onClick={() => setColor(c)}
-                      className={`h-6 w-6 rounded-full ring-2 ring-offset-1 ${c === color ? "ring-brand" : "ring-gray-200"}`}
-                      style={{ background: c }}
+                      className={`h-6 w-6 rounded-full ring-2 ring-offset-1 ${c.hex === color.hex ? "ring-brand" : "ring-gray-200"}`}
+                      style={{ background: c.hex }}
                     />
                   ))}
                 </div>
               </div>
 
-              <div className="relative bg-[radial-gradient(circle_at_center,#f5f4fa,#ecebf3)] px-4 py-6">
-                <div className="relative mx-auto aspect-[4/5] w-full max-w-[380px]">
-                  <prod.Silueta vista={v} color={color} />
-                  {/* Logo colocado */}
+              <div className="relative bg-[radial-gradient(circle_at_center,#f5f4fa,#e9e8f1)] px-4 py-6">
+                <div ref={lienzo} className="relative mx-auto aspect-[4/5] w-full max-w-[400px]">
+                  {/* Foto de la prenda (blanca) + capa de color con la silueta como máscara */}
+                  <img
+                    src={prenda.src}
+                    alt={`${prenda.label}, vista frontal`}
+                    width={800}
+                    height={1000}
+                    className="absolute inset-0 h-full w-full object-contain drop-shadow-[0_20px_30px_rgba(27,23,53,.18)]"
+                  />
                   <div
-                    key={prodId + v}
-                    className="animate-appear absolute -translate-x-1/2 -translate-y-1/2"
+                    aria-hidden="true"
+                    className="absolute inset-0 transition-colors duration-300"
+                    style={{
+                      background: color.hex,
+                      mixBlendMode: "multiply",
+                      WebkitMask: mask,
+                      mask,
+                    }}
+                  />
+                  {/* Logo colocado: se arrastra, se escala desde la esquina y se mueve con flechas */}
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Logo colocado, ${medida}. Arrastra para mover o usa las flechas.`}
+                    onPointerDown={empezar("mover")}
+                    onPointerMove={mover}
+                    onPointerUp={soltar}
+                    onPointerCancel={soltar}
+                    onKeyDown={teclado}
+                    className="absolute -translate-x-1/2 -translate-y-1/2 cursor-grab touch-none select-none focus:outline-none active:cursor-grabbing"
                     style={{ left: `${pos.x}%`, top: `${pos.y}%`, width: `${pos.w}%` }}
                   >
-                    <div className="relative rounded-[3px] outline outline-2 outline-offset-2 outline-brand">
-                      <LogoEjemplo />
-                      <span className="absolute -right-2 -bottom-2 h-3.5 w-3.5 rounded-full border-2 border-white bg-brand shadow" aria-hidden="true" />
-                      <span className="absolute -top-6 left-1/2 h-3 w-3 -translate-x-1/2 rounded-full border-2 border-white bg-brand shadow" aria-hidden="true" />
+                    <div className="relative rounded-[2px] outline outline-2 outline-offset-2 outline-brand">
+                      {srcLogo ? (
+                        <img src={srcLogo} alt={logo?.name || "Tu logo"} draggable={false} className="block h-auto w-full" />
+                      ) : (
+                        <LogoEjemplo />
+                      )}
+                      <span
+                        onPointerDown={empezar("escalar")}
+                        onPointerMove={mover}
+                        onPointerUp={soltar}
+                        onPointerCancel={soltar}
+                        className="absolute -right-3 -bottom-3 h-5 w-5 cursor-nwse-resize touch-none rounded-full border-2 border-white bg-brand shadow"
+                        aria-hidden="true"
+                      />
                     </div>
-                    <span className="absolute left-1/2 top-full mt-3 -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-900 px-2 py-0.5 text-[10px] font-semibold text-white">
-                      {pos.cm}
+                    <span className="pointer-events-none absolute left-1/2 top-full mt-3 -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-900 px-2 py-0.5 text-[10px] font-semibold text-white">
+                      {medida}
                     </span>
                   </div>
                 </div>
               </div>
 
+              {/* Herramientas básicas del lienzo */}
+              <div
+                className="flex flex-wrap items-center gap-2 border-t border-gray-100 bg-gray-50/60 px-4 py-3"
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  cargar(e.dataTransfer.files?.[0]);
+                }}
+              >
+                <input
+                  ref={inputRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                  className="sr-only"
+                  onChange={(e) => {
+                    cargar(e.target.files?.[0]);
+                    e.target.value = "";
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => inputRef.current?.click()}
+                  className="btn-sm bg-brand text-white hover:brightness-110"
+                >
+                  {logo ? "Cambiar logo" : "Sube tu logo"}
+                </button>
+                <label className={`inline-flex items-center gap-2 rounded-lg px-2.5 py-1 text-xs ring-1 ${logo ? "bg-white text-gray-700 ring-gray-200" : "cursor-not-allowed bg-gray-100 text-gray-400 ring-gray-200"}`}>
+                  <input type="checkbox" disabled={!logo} checked={sinFondo} onChange={(e) => setSinFondo(e.target.checked)} className="accent-[var(--color-brand)]" />
+                  Quitar fondo
+                </label>
+                {logo && sinFondo && (
+                  <label className="inline-flex items-center gap-2 text-xs text-gray-600">
+                    Intensidad
+                    <input type="range" min={5} max={120} value={tolerancia} onChange={(e) => setTolerancia(Number(e.target.value))} className="w-24 accent-[var(--color-brand)]" />
+                  </label>
+                )}
+                {logo && (
+                  <button type="button" onClick={() => { setLogo(null); setSinFondo(false); setPos(prenda.logo); }} className="btn-sm bg-white text-gray-700 ring-1 ring-gray-200 hover:bg-gray-50">
+                    Quitar
+                  </button>
+                )}
+                <span className="ml-auto text-[11px] text-gray-500">
+                  {logo ? "Arrastra el logo o usa las flechas. La esquina cambia el tamaño." : "También puedes soltar la imagen aquí."}
+                </span>
+                {error && <p className="w-full text-xs text-red-600" role="alert">{error}</p>}
+                <p className="w-full text-[11px] text-gray-400">
+                  Tu imagen no sale de tu navegador. Quitar fondo aquí elimina fondos de color sólido; en LANA tienes el
+                  editor completo.
+                </p>
+              </div>
+
               <div className="flex flex-wrap gap-2 border-t border-gray-100 px-4 py-3 text-[11px]">
                 <Chip strong>Posición 1</Chip>
-                <Chip>{v === "Manga" ? "Lateral izq." : v}</Chip>
-                <Chip>{pos.cm}</Chip>
-                <Chip>{pos.desde}</Chip>
+                <Chip>{prenda.vista}</Chip>
+                <Chip>{medida}</Chip>
+                <Chip>{ubicacion}</Chip>
               </div>
             </div>
 
@@ -226,97 +397,6 @@ function LogoEjemplo() {
   );
 }
 
-/* ── Siluetas (viewBox 0 0 400 500) ────────────────────────────────────── */
-
-function Shade() {
-  return (
-    <defs>
-      <linearGradient id="sil-shade" x1="0" x2="1">
-        <stop offset="0" stopColor="#000" stopOpacity=".18" />
-        <stop offset=".5" stopColor="#000" stopOpacity="0" />
-        <stop offset="1" stopColor="#000" stopOpacity=".18" />
-      </linearGradient>
-    </defs>
-  );
-}
-
-function Camisa({ vista, color }: { vista: Vista; color: string }) {
-  const stroke = "rgba(0,0,0,.25)";
-  if (vista === "Manga") {
-    return (
-      <svg viewBox="0 0 400 500" className="absolute inset-0 h-full w-full" aria-hidden="true">
-        <Shade />
-        <path d="M150 40 C190 30 230 34 255 50 L285 430 C250 448 175 450 140 432 Z" fill={color} stroke={stroke} strokeWidth="2" />
-        <path d="M140 432 C175 450 250 448 285 430 L288 470 C250 486 172 486 138 470 Z" fill={color} stroke={stroke} strokeWidth="2" />
-        <path d="M150 40 C190 30 230 34 255 50 L285 430 C250 448 175 450 140 432 Z" fill="url(#sil-shade)" />
-      </svg>
-    );
-  }
-  return (
-    <svg viewBox="0 0 400 500" className="absolute inset-0 h-full w-full" aria-hidden="true">
-      <Shade />
-      <path
-        d="M150 40 L120 52 C95 62 72 70 62 95 L30 300 C28 330 30 360 34 395 L70 398 L82 215 L92 455 C140 480 260 480 308 455 L318 215 L330 398 L366 395 C370 360 372 330 370 300 L338 95 C328 70 305 62 280 52 L250 40 C232 52 168 52 150 40 Z"
-        fill={color}
-        stroke={stroke}
-        strokeWidth="2"
-      />
-      <path
-        d="M150 40 L120 52 C95 62 72 70 62 95 L30 300 C28 330 30 360 34 395 L70 398 L82 215 L92 455 C140 480 260 480 308 455 L318 215 L330 398 L366 395 C370 360 372 330 370 300 L338 95 C328 70 305 62 280 52 L250 40 C232 52 168 52 150 40 Z"
-        fill="url(#sil-shade)"
-      />
-      {vista === "Frente" ? (
-        <>
-          <path d="M150 40 L176 92 L200 64 L224 92 L250 40" fill="none" stroke={stroke} strokeWidth="2" />
-          <line x1="200" y1="64" x2="200" y2="468" stroke={stroke} strokeWidth="1.5" />
-          {[120, 180, 240, 300, 360, 420].map((y) => (
-            <circle key={y} cx="207" cy={y} r="3" fill="rgba(255,255,255,.35)" />
-          ))}
-        </>
-      ) : (
-        <path d="M150 40 C170 56 230 56 250 40 M120 100 C170 115 230 115 280 100" fill="none" stroke={stroke} strokeWidth="2" />
-      )}
-    </svg>
-  );
-}
-
-function Playera({ vista, color }: { vista: Vista; color: string }) {
-  const stroke = "rgba(0,0,0,.25)";
-  const body =
-    "M145 50 L95 70 L35 135 L80 185 L112 160 L108 455 C160 472 240 472 292 455 L288 160 L320 185 L365 135 L305 70 L255 50 C240 74 160 74 145 50 Z";
-  return (
-    <svg viewBox="0 0 400 500" className="absolute inset-0 h-full w-full" aria-hidden="true">
-      <Shade />
-      <path d={body} fill={color} stroke={stroke} strokeWidth="2" />
-      <path d={body} fill="url(#sil-shade)" />
-      {vista === "Frente" ? (
-        <path d="M145 50 C160 92 240 92 255 50" fill="none" stroke={stroke} strokeWidth="3" />
-      ) : (
-        <path d="M145 50 C165 66 235 66 255 50" fill="none" stroke={stroke} strokeWidth="3" />
-      )}
-    </svg>
-  );
-}
-
-function Gorra({ vista, color }: { vista: Vista; color: string }) {
-  const stroke = "rgba(0,0,0,.25)";
-  return (
-    <svg viewBox="0 0 400 500" className="absolute inset-0 h-full w-full" aria-hidden="true">
-      <Shade />
-      <path d="M70 300 C70 160 135 110 200 110 C265 110 330 160 330 300 Z" fill={color} stroke={stroke} strokeWidth="2" />
-      <path d="M70 300 C70 160 135 110 200 110 C265 110 330 160 330 300 Z" fill="url(#sil-shade)" />
-      <circle cx="200" cy="112" r="7" fill={color} stroke={stroke} strokeWidth="2" />
-      {vista === "Frente" ? (
-        <>
-          <path d="M200 112 L200 300 M135 135 C120 190 115 250 118 300 M265 135 C280 190 285 250 282 300" fill="none" stroke={stroke} strokeWidth="1.5" />
-          <path d="M60 300 C110 345 290 345 340 300 C330 330 280 370 200 372 C120 370 70 330 60 300 Z" fill={color} stroke={stroke} strokeWidth="2" />
-        </>
-      ) : (
-        <>
-          <path d="M150 300 C150 262 172 245 200 245 C228 245 250 262 250 300 Z" fill="#ecebf3" stroke={stroke} strokeWidth="2" />
-          <rect x="160" y="292" width="80" height="10" rx="4" fill={color} stroke={stroke} strokeWidth="1.5" />
-        </>
-      )}
-    </svg>
-  );
+function clamp(v: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, v));
 }
