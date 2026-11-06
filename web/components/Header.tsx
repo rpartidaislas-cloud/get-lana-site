@@ -5,7 +5,7 @@ import { WA_CREAR_CUENTA } from "@/lib/whatsapp";
 
 const links = [
   { href: "#producto", label: "Producto" },
-  { href: "#disenos", label: "Diseños" },
+  { href: "#disenos", label: "Pruébalo" },
   { href: "#flujo", label: "Cómo funciona" },
   { href: "#precios", label: "Precios" },
   { href: "#faq", label: "Preguntas" },

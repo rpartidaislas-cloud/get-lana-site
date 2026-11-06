@@ -5,7 +5,7 @@ import Faq from "@/components/Faq";
 import Legacy from "@/components/Legacy";
 import Producto from "@/components/Producto";
 import Flujo from "@/components/Flujo";
-import Disenos from "@/components/Disenos";
+import Galeria from "@/components/Galeria";
 import Precios from "@/components/Precios";
 
 export default function Page() {
@@ -16,7 +16,7 @@ export default function Page() {
         <Hero />
         <Marquee />
         <Producto />
-        <Disenos />
+        <Galeria />
         <Flujo />
         {/* Fase 3: testimonio → carrusel con betas reales. */}
         <Legacy name="taller" />
