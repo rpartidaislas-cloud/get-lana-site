@@ -46,6 +46,7 @@ const planes: Plan[] = [
     mensual: 990,
     anual: 792,
     anualTotal: 9504,
+    popular: true,
     ahorro: 2376,
     capacidad: [
       ["Mensajes IA", "1,000", "/ mes"],
@@ -66,13 +67,12 @@ const planes: Plan[] = [
     cta: "Crear cuenta gratis",
   },
   {
-    kicker: "★ Más popular",
+    kicker: "Equipos y campañas",
     name: "Profesional",
     mensual: 1990,
     anual: 1592,
     anualTotal: 19104,
     ahorro: 4776,
-    popular: true,
     capacidad: [
       ["Mensajes IA", "2,000", "/ mes"],
       ["Tokens Copilot", "4M", "/ mes"],
