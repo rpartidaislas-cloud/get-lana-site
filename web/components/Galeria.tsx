@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { DisenoPanel } from "./Disenos";
 import Cobro from "./Cobro";
+import Produccion from "./Produccion";
+import Factura from "./Factura";
 
 /**
  * "Lo que hace LANA": galería con pestañas. Cada pestaña es una demostración
@@ -24,6 +26,22 @@ const tabs = [
     title: "Tu cliente aprueba y paga desde el mismo enlace",
     intro:
       "La cotización que envías por WhatsApp es una página donde tu cliente revisa el pedido, elige anticipo o pago total y paga con el método que prefiera. Al pagar, el pedido entra solo a producción.",
+  },
+  {
+    id: "produccion",
+    label: "Producción",
+    kicker: "Producción / Workflow",
+    title: "El pedido pagado entra solo a producción",
+    intro:
+      "Cada orden de trabajo se programa con fecha compromiso, máquina y responsable según la capacidad de tu taller. Tu equipo la avanza por etapas hasta la entrega.",
+  },
+  {
+    id: "factura",
+    label: "Factura CFDI 4.0",
+    kicker: "Facturación",
+    title: "Tu cliente se factura desde su pedido",
+    intro:
+      "Con sus datos fiscales, tu cliente obtiene su CFDI 4.0 en PDF y XML desde el mismo enlace. LANA genera los complementos de pago de los anticipos.",
   },
 ] as const;
 
@@ -65,12 +83,18 @@ export default function Galeria() {
             </div>
           </div>
 
-          {/* Se montan ambos paneles para conservar el estado al cambiar de pestaña. */}
+          {/* Se montan todos los paneles para conservar su estado al cambiar de pestaña. */}
           <div id="panel-diseno" role="tabpanel" aria-labelledby="tab-diseno" hidden={tab !== "diseno"}>
             <DisenoPanel />
           </div>
           <div id="panel-cobro" role="tabpanel" aria-labelledby="tab-cobro" hidden={tab !== "cobro"}>
             <Cobro />
+          </div>
+          <div id="panel-produccion" role="tabpanel" aria-labelledby="tab-produccion" hidden={tab !== "produccion"}>
+            <Produccion />
+          </div>
+          <div id="panel-factura" role="tabpanel" aria-labelledby="tab-factura" hidden={tab !== "factura"}>
+            <Factura />
           </div>
         </div>
       </div>
