@@ -18,7 +18,6 @@ type Plan = {
   anual?: number; // precio mensual equivalente en plan anual
   anualTotal?: number;
   ahorro?: number;
-  gratis?: boolean;
   popular?: boolean;
   capacidad?: [string, string, string][];
   items: string[];
@@ -26,14 +25,6 @@ type Plan = {
 };
 
 const planes: Plan[] = [
-  {
-    kicker: "Para siempre",
-    name: "Gratis",
-    mensual: 0,
-    gratis: true,
-    items: ["1 número de WhatsApp", "1 usuario", "100 mensajes / mes"],
-    cta: "Crear cuenta gratis",
-  },
   {
     kicker: "Mensajería",
     name: "Inicio",
@@ -148,7 +139,7 @@ export default function Precios() {
               El plan que crece contigo
             </h2>
             <p className="mt-4 text-lg text-gray-600">
-              14 días de prueba gratuita en todos los planes de pago, sin tarjeta. Integración acompañada en
+              14 días de prueba gratuita en todos los planes, sin tarjeta. Integración acompañada en
               aproximadamente una semana. Cancela cuando quieras.
             </p>
 
@@ -180,14 +171,14 @@ export default function Precios() {
             </div>
           </div>
 
-          <Reveal className="reveal-stagger grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+          <Reveal className="reveal-stagger grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {planes.map((plan) => (
               <Card key={plan.name} plan={plan} periodo={periodo} />
             ))}
           </Reveal>
 
           <p className="mx-auto mt-8 max-w-4xl text-center text-xs text-gray-500">
-            Precios en pesos mexicanos, IVA incluido. Los planes de pago incluyen 14 días de prueba gratuita sin tarjeta
+            Precios en pesos mexicanos, IVA incluido. Todos los planes incluyen 14 días de prueba gratuita sin tarjeta
             de crédito. Las conversaciones IA se cobran por mensajes; packs adicionales disponibles desde el panel. Los
             timbres CFDI comprados no vencen. No incluye cargos de mensajería de Meta ni otros servicios externos.
           </p>
@@ -199,9 +190,8 @@ export default function Precios() {
 
 function Card({ plan, periodo }: { plan: Plan; periodo: Periodo }) {
   const precio = periodo === "anual" && plan.anual != null ? plan.anual : plan.mensual;
-  const detalle = plan.gratis
-    ? "Sin tarjeta. Para siempre."
-    : periodo === "anual"
+  const detalle =
+    periodo === "anual"
       ? `IVA incluido · ${mxn(plan.anualTotal!)} MXN/año · ahorras ${mxn(plan.ahorro!)}.`
       : "IVA incluido · 14 días de prueba gratuita, sin tarjeta.";
 
