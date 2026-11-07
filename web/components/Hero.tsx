@@ -29,9 +29,10 @@ export default function Hero() {
               Responde, cotiza y produce desde una sola conversación
             </h1>
             <p className="animate-appear mx-auto mb-8 max-w-2xl text-lg text-gray-600 opacity-0 [animation-delay:240ms] md:text-xl">
-              LANA es la plataforma comercial para talleres de bordado, impresión y artículos promocionales. Tus chats
-              llegan a una sola bandeja, la IA cotiza con tu catálogo y tus precios, y cada pedido pagado se convierte en
-              una orden de trabajo.
+              LANA es la plataforma comercial para talleres de bordado, impresión y artículos promocionales en México.
+              Tus chats de WhatsApp, Messenger e Instagram llegan a una bandeja unificada, el chatbot con IA cotiza con
+              tu catálogo y tus precios y automatiza respuestas, y cada pedido pagado se convierte en una orden de
+              trabajo.
             </p>
             <div className="animate-appear flex flex-wrap items-center justify-center gap-3 opacity-0 [animation-delay:360ms]">
               <a

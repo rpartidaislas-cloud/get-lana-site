@@ -28,12 +28,25 @@ junto con los cambios de `web/`.
 - `public/` — assets estáticos, `CNAME`, `.nojekyll`, `lana.js`, `supabase-config.js`,
   `privacidad.html`, `eliminacion-datos.html`.
 
+## SEO
+
+- Metadata (título, descripción, canonical, Open Graph, Twitter) y JSON-LD
+  (Organization, WebSite, SoftwareApplication, FAQPage) salen de `lib/seo.ts` y se
+  insertan en `app/layout.tsx`. El FAQPage se genera de `legacy/faq.json`, la misma fuente
+  que el FAQ visible. Los precios de `PLANES_SEO` deben coincidir con `components/Precios.tsx`.
+- `public/robots.txt` y `public/sitemap.xml` se copian a la raíz con `npm run deploy`.
+  Si se agrega una página pública nueva, súmala al sitemap; las páginas internas
+  (`lana-demo.html`, `demo-video.html`) llevan `noindex` y no van en el sitemap.
+- `npm run check:seo` (después de `npm run deploy`) verifica la raíz exportada: título,
+  descripción, canonical, un solo h1, JSON-LD, FAQPage idéntico al FAQ visible, precios,
+  robots.txt, sitemap.xml, noindex y claims no permitidos (Meta Partner, BSP, Tech Provider oficial).
+
 ## Fases
 
 1. **Hecha** — proyecto Next 15 + Tailwind 4, hero nuevo, teléfono con chat animado,
    marquesina de técnicas e integraciones, FAQ en React; resto migrado tal cual.
 2. **Hecha** — `Producto` en bento con ilustraciones propias, `Flujo` con pasos
-   conectados y rejilla de capacidades, `Precios` con 5 planes, toggle mensual/anual y
+   conectados y rejilla de capacidades, `Precios` con 4 planes, toggle mensual/anual y
    CTA a WhatsApp con el plan elegido (`lib/whatsapp.ts`); el módulo Beta se retiró. Entradas al hacer scroll con `components/Reveal.tsx`.
 3. **En curso** — OG image nueva hecha. Pendiente: fotografía/video de producto
    (Higgsfield requiere plan Basic; mejor fotos reales del taller) y testimonios de betas.
