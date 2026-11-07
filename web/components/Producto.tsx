@@ -25,8 +25,8 @@ export default function Producto() {
             {/* Pilar 1: bandeja */}
             <Cell className="md:col-span-3 lg:col-span-4">
               <CellHead icon={<Icon.inbox className="h-5 w-5" />} title="Una bandeja para WhatsApp, Messenger e Instagram">
-                Cada conversación llega al mismo lugar con su historial. Tu equipo responde desde ahí sin cambiar de app
-                ni perder el hilo.
+                Una bandeja unificada: cada conversación llega al mismo lugar con su historial. Tu equipo responde desde
+                ahí sin cambiar de app ni perder el hilo.
               </CellHead>
               <InboxArt />
             </Cell>

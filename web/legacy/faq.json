@@ -22,5 +22,13 @@
  {
   "q": "¿Puedo cancelar o cambiar de plan?",
   "a": "<p class=\"px-4 pb-3\">Sí, en cualquier momento y sin penalización. Puedes subir o bajar de plan desde el panel; tu acceso se mantiene hasta el final del periodo pagado y puedes solicitar la eliminación de tus datos desde la página correspondiente.</p>"
+ },
+ {
+  "q": "¿LANA funciona con Messenger e Instagram además de WhatsApp?",
+  "a": "<p class=\"px-4 pb-3\">Sí. WhatsApp Business, Messenger e Instagram llegan a la misma bandeja unificada, con el historial de cada cliente. Desde ahí tu equipo responde y la IA puede cotizar con tu catálogo en los tres canales.</p>"
+ },
+ {
+  "q": "¿LANA es un chatbot?",
+  "a": "<p class=\"px-4 pb-3\">LANA incluye un chatbot con IA que automatiza respuestas con tu catálogo y tus reglas de precio, pero no se limita a eso: también genera cotizaciones con folio y convierte cada pedido pagado en una orden de trabajo. Tú decides cuándo responde sola y en cualquier momento tomas la conversación.</p>"
  }
 ]
