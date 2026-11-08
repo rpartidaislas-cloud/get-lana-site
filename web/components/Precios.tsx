@@ -35,7 +35,7 @@ const planes: Plan[] = [
     capacidad: [
       ["Mensajes", "1,000", "/ mes"],
       ["Almacenamiento", "1 GB", "en la nube"],
-      ["Facturación CFDI", "15", "timbres"],
+      ["Facturación CFDI", "50", "timbres"],
     ],
     items: ["WhatsApp · Messenger · Instagram", "1 usuario", "Panel de administración completo", "Modo Tienda / POS", "Catálogo público", "Soporte por chat"],
     cta: "Crear cuenta gratis",
@@ -49,10 +49,10 @@ const planes: Plan[] = [
     popular: true,
     ahorro: 2376,
     capacidad: [
-      ["Mensajes IA", "1,000", "/ mes"],
+      ["Mensajes IA", "2,000", "/ mes"],
       ["Tokens Copilot", "1M", "/ mes"],
       ["Almacenamiento", "5 GB", "en la nube"],
-      ["Facturación CFDI", "50", "timbres"],
+      ["Facturación CFDI", "100", "timbres"],
     ],
     items: [
       "WhatsApp · Messenger · Instagram",
@@ -74,14 +74,14 @@ const planes: Plan[] = [
     anualTotal: 19104,
     ahorro: 4776,
     capacidad: [
-      ["Mensajes IA", "2,000", "/ mes"],
+      ["Mensajes IA", "5,000", "/ mes"],
       ["Tokens Copilot", "4M", "/ mes"],
       ["Almacenamiento", "20 GB", "en la nube"],
-      ["Facturación CFDI", "150", "timbres"],
+      ["Facturación CFDI", "200", "timbres"],
     ],
     items: [
       "WhatsApp · Messenger · Instagram",
-      "5 usuarios",
+      "10 usuarios",
       "IA que cotiza, responde y atiende 24/7",
       "Panel de administración completo",
       "Modo Tienda / POS",
@@ -101,15 +101,15 @@ const planes: Plan[] = [
     anualTotal: 38304,
     ahorro: 9576,
     capacidad: [
-      ["Mensajes IA", "4,000", "/ mes"],
+      ["Mensajes IA", "10,000", "/ mes"],
       ["Tokens Copilot", "8M", "/ mes"],
       ["Almacenamiento", "50 GB", "en la nube"],
-      ["Facturación CFDI", "300", "timbres"],
+      ["Facturación CFDI", "500", "timbres"],
     ],
     items: [
       "Hasta 3 números de WhatsApp",
       "WhatsApp · Messenger · Instagram",
-      "15 usuarios",
+      "Usuarios ilimitados",
       "IA que cotiza, responde y atiende 24/7",
       "Panel de administración completo",
       "Modo Tienda / POS",
