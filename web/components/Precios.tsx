@@ -49,7 +49,7 @@ const planes: Plan[] = [
     popular: true,
     ahorro: 2376,
     capacidad: [
-      ["Mensajes IA", "2,000", "/ mes"],
+      ["Mensajes IA", "300", "/ mes"],
       ["Tokens Copilot", "1M", "/ mes"],
       ["Almacenamiento", "5 GB", "en la nube"],
       ["Facturación CFDI", "100", "timbres"],
@@ -74,7 +74,7 @@ const planes: Plan[] = [
     anualTotal: 19104,
     ahorro: 4776,
     capacidad: [
-      ["Mensajes IA", "5,000", "/ mes"],
+      ["Mensajes IA", "600", "/ mes"],
       ["Tokens Copilot", "4M", "/ mes"],
       ["Almacenamiento", "20 GB", "en la nube"],
       ["Facturación CFDI", "200", "timbres"],
@@ -101,7 +101,7 @@ const planes: Plan[] = [
     anualTotal: 38304,
     ahorro: 9576,
     capacidad: [
-      ["Mensajes IA", "10,000", "/ mes"],
+      ["Mensajes IA", "1,200", "/ mes"],
       ["Tokens Copilot", "8M", "/ mes"],
       ["Almacenamiento", "50 GB", "en la nube"],
       ["Facturación CFDI", "500", "timbres"],
